@@ -22,6 +22,13 @@ export class AuthService {
     private readonly dialog: MatDialog,
     private readonly autoLogoutService: AutoLogoutService
   ) {
+    const authData = new AuthData();
+    authData.userId = 1//+res.data.userId;
+    authData.isAdmin = true;
+      //Helper.isTruthy(res.data.isAdmin) && res.data.isAdmin === '1';
+    authData.userName = "1"// res.data.userName;
+    authData.token = ""//res.data.token;
+    localStorage.setItem('authData', JSON.stringify(authData));
     this.isLoggedIn();
   }
 
@@ -33,15 +40,15 @@ export class AuthService {
     //   .subscribe(
     //     (res: any) => {
     //       if (res.success) {
-    //         this.setIsAuthenticated(true);
-    //         const authData = new AuthData();
-    //         authData.userId = +res.data.userId;
-    //         authData.isAdmin =
-    //           Helper.isTruthy(res.data.isAdmin) && res.data.isAdmin === '1';
-    //         authData.userName = res.data.userName;
-    //         authData.token = res.data.token;
-    //         localStorage.setItem('authData', JSON.stringify(authData));
-    //         this.router.navigate(['stockInward']);
+            this.setIsAuthenticated(true);
+            const authData = new AuthData();
+            authData.userId = 1//+res.data.userId;
+            authData.isAdmin = true;
+              //Helper.isTruthy(res.data.isAdmin) && res.data.isAdmin === '1';
+            authData.userName = "1"// res.data.userName;
+            authData.token = ""//res.data.token;
+            localStorage.setItem('authData', JSON.stringify(authData));
+            this.router.navigate(['register']);
     //       } else {
     //         this.router.navigate(['login']);
     //       }
