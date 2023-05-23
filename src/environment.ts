@@ -4,7 +4,7 @@ export const environment = {
     apiURL: 'http://localhost:3000',
   },
   dev: {
-    uiURL: 'https://proud-grass-05ccef700.2.azurestaticapps.net',
+    uiURL: 'https://delightful-forest-01bf74f0f.3.azurestaticapps.net',
     apiURL: 'https://a1-dev-mdmpl-api.azurewebsites.net',
   },
   prod: {
