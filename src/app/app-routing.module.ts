@@ -6,6 +6,7 @@ import { ChildAuthGuard } from './auth/child-auth.guard';
 import { AuthGuard } from './auth/auth.guard';
 import { AttendanceRegisterComponent } from './attendance-register/attendance-register.component';
 import { AttendanceRegisterEditorComponent } from './attendance-register/attendance-register-editor/attendance-register-editor.component';
+import { CompanyBrowserComponent } from './control-panel/company-browser/company-browser.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -19,6 +20,11 @@ const routes: Routes = [
       {
         path: 'attendanceEditor',
         component: AttendanceRegisterEditorComponent,
+      },
+      // control panel routes
+      {
+        path: 'company',
+        component: CompanyBrowserComponent,
       },
     ],
   },

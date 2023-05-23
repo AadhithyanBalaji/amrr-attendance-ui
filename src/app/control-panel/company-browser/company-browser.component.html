@@ -1,0 +1,9 @@
+<div class="df">
+    <app-amrr-page-header [title]="'Company List'"
+        (onActionClicked)="browserService.addNewCompany()"></app-amrr-page-header>
+    <div class="grid-container">
+        <app-ammr-grid [columns]="browserService.columns" [dataSource]="browserService.dataSource"
+            [loading]="browserService.loading" (onEdit)="browserService.onEdit($event)"
+            (onDelete)="browserService.onDelete($event)"></app-ammr-grid>
+    </div>
+</div>
