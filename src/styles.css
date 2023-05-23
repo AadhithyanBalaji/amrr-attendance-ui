@@ -1,1 +1,290 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: Candara;
+    src: url("./assets/font/candara.ttf");
+  }
+  
+  * {
+    font-family: Candara !important;
+  }
+  
+  mat-icon {
+    font-family: "Material Icons" !important;
+  }
+  
+  html,
+  body {
+    height: 100%;
+    background-color: #f4f6f9;
+  }
+  body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+  .main-router-outlet-container {
+    background-color: #f4f6f9;
+  }
+  
+  .bg {
+    background-color: #f4f6f9;
+  }
+  
+  .dp {
+    padding: 15px;
+  }
+  
+  .dp-b {
+    padding-bottom: 15px;
+  }
+  
+  .dp-t {
+    padding-top: 15px;
+  }
+  
+  .center-align {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
+  
+  .df {
+    padding: 0 15px 15px 15px;
+    background-color: #f4f6f9;
+    height: calc(100vh - 96px);
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+  .route-active {
+    background-color: lightgray !important;
+  }
+  
+  .grid-container {
+    margin: 15px 0;
+    border: 2px solid lightgray;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: white;
+  }
+  
+  .spinner-dialog {
+    background-color: rgba(0, 0, 0, 0.32);
+  }
+  
+  form div mat-form-field {
+    width: 100%;
+  }
+  
+  .form-container {
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-bottom: 15px;
+  }
+  
+  .list-horizontal {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .display-cards-container {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .display-card {
+    width: 20vw;
+  }
+  
+  @media (max-width: 870px) {
+    .display-card {
+      width: 100%;
+    }
+    .weight-image {
+      background-size: 5vh 5vw !important;
+      background-position: 90% 60% !important;
+    }
+  
+    .weight-hanging-image {
+      background-size: 5vh 5vw !important;
+      background-position: 90% 60% !important;
+    }
+  }
+  
+  .display-card mat-card-header {
+    font-weight: 900;
+    font-size: 35px;
+  }
+  
+  .action-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    z-index: 999;
+  }
+  
+  mat-card-header {
+    margin-bottom: 15px;
+  }
+  
+  .mdc-icon-button {
+    height: 38px !important;
+    padding: 8px !important;
+  }
+  
+  .mat-mdc-form-field-icon-suffix .mat-icon {
+    padding: 5px !important;
+  }
+  
+  .batch-grid-container {
+    margin-top: -15px;
+  }
+  
+  .batch-card-content {
+    min-height: calc(100vh - 649px) !important;
+  }
+  
+  .transaction-editor-form {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .first-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 15px;
+  }
+  
+  @media (max-width: 955px) {
+    .first-row {
+      flex-direction: column !important;
+      flex-wrap: nowrap !important;
+      justify-content: unset !important;
+      margin: 5px 15px 15px 15px !important;
+    }
+    .first-row mat-card {
+      width: 100% !important;
+    }
+  }
+  
+  .last-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  
+  .last-row mat-card-content {
+    padding-bottom: 0 !important;
+  }
+  
+  @media (max-width: 870px) {
+    .last-row {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: unset;
+      margin-bottom: 45px;
+    }
+  }
+  
+  .amrr-table-container {
+    margin-top: 10px;
+    overflow: auto;
+    padding: 0 15px;
+  }
+  
+  .grid-spinner {
+    height: 100px;
+    position: absolute;
+    z-index: 999;
+    left: 49%;
+    top: 40%;
+  }
+  
+  .no-data-found {
+    position: relative;
+    left: 45vw;
+    padding: 15px;
+  }
+  
+  .gray {
+    background-color: #f2f2f2 !important;
+  }
+  
+  .logo {
+    min-width: 50px;
+    min-height: 200px;
+    height: 27vh;
+  }
+  
+  .editor-save-spinner {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 0 50px;
+  }
+  
+  mat-list-item span {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: rgba(0, 0, 0, 0.54) !important;
+  }
+  
+  .mat-expansion-panel-header-description {
+    font-size: 16px !important;
+  }
+  
+  .amrr-table-container table th {
+    font-weight: bold !important;
+  }
+  
+  .amrr-table-container table,
+  .amrr-table-container table thead,
+  .amrr-table-container table th,
+  .amrr-table-container table td {
+    border: 1px solid #dee2e6;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  
+  .user-info-div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 0;
+    max-width: 100px;
+  }
+  
+  .user-chip {
+    border-radius: 20px;
+    color: white;
+    padding: 4px;
+    text-align: center;
+    font-size: 15px;
+    word-break: break-word;
+  }
+  
+  .bg-green {
+    background-color: #28a745;
+  }
+  
+  .bg-blue {
+    background-color: #0043ff;
+  }
+  
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

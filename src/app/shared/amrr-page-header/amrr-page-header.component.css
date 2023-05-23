@@ -1,0 +1,9 @@
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 15px 0 6px;
+}
+
+.title-container h2 {
+  margin: 0 !important;
+}

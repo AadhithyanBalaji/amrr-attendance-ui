@@ -1,0 +1,15 @@
+<div *ngIf="loading" class="action-row">
+    <div class="editor-save-spinner">
+        <mat-spinner [diameter]="30"></mat-spinner> Saving...
+    </div>
+</div>
+<div *ngIf="!loading && isUpdateMode" class="action-row">
+    <button mat-flat-button color="primary" (click)="onAdd()">Update</button>
+    <button mat-flat-button color="secondary" (click)="onClose()" style="margin-right: 30px">Close</button>
+</div>
+<div *ngIf="!loading && !isUpdateMode" class="action-row">
+    <button mat-flat-button color="primary" (click)="onAdd()">Save</button>
+    <!-- <button mat-flat-button color="primary" (click)="onAddAndClose()">Save &
+        Continue</button> -->
+    <button mat-flat-button color="secondary" (click)="onClose()" style="margin-right: 30px">Close</button>
+</div>

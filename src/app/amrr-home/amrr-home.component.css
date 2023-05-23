@@ -1,0 +1,44 @@
+.example-container {
+  height: 100vh;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.example-sidenav {
+  padding: 20px;
+  background-color: #fffbdb;
+}
+
+.menu-icon-container {
+  padding: 15px;
+}
+
+.master-panel-open {
+  height: 290px !important;
+}
+
+.menu-container {
+  height: calc(100vh - 450px);
+  overflow: auto;
+}
+
+.menu-container mat-expansion-panel {
+  margin: 0 !important;
+  box-shadow: none;
+  background-color: #fffbdb;
+}
+
+.menu-container .mat-expansion-panel-header .mat-expanded {
+  height: 40px !important;
+}
+
+.menu-container mat-list-item {
+  height: 40px;
+}
+
+.menu-container mat-list-item a,
+logout-div {
+  color: rgba(0, 0, 0, 0.54);
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}

@@ -1,0 +1,25 @@
+<div class="login-wrapper">
+    <mat-card class="box">
+        <form class="example-form">
+            <mat-card-content>
+                <div class="creds-form-container">
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Username" [formControl]="loginForm.controls.userName">
+                        <mat-icon color="primary" matSuffix>person</mat-icon>
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Password" type="password"
+                            [formControl]="loginForm.controls.password">
+                        <mat-icon color="primary" matSuffix>lock</mat-icon>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="isAutoLogout" class="display: flex; justify-content: center">You have been logged out
+                    automatically due to inactivity!</div>
+            </mat-card-content>
+            <div class="actions-container">
+                <button mat-raised-button color="primary" (click)="login()">Log in</button>
+                <mat-spinner *ngIf="authService.isLoggingIn" [diameter]="30"></mat-spinner>
+            </div>
+        </form>
+    </mat-card>
+</div>

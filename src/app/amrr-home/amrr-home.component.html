@@ -1,0 +1,89 @@
+<div class="main-router-outlet-container">
+    <mat-drawer-container class="example-container" autosize>
+        <mat-drawer #drawer class="example-sidenav" mode="side">
+            <div>
+                <img class="logo" src="../assets/images/amrr-logo.jpg" alt="company-logo">
+            </div>
+            <div class="welcome-message center-align dp">
+                <h3>Welcome, {{authService.getUserName()}}!</h3>
+            </div>
+            <div class="menu-container">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-icon aria-hidden="false" aria-label="stock transactions"
+                                fontIcon="local_shipping"></mat-icon>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Attendance
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <mat-selection-list [multiple]="false">
+                        <a [routerLink]="['register']"><mat-list-item role="listitem"
+                                routerLinkActive="route-active">Register</mat-list-item></a>
+                    </mat-selection-list>
+                </mat-expansion-panel>
+                <!-- <mat-expansion-panel *ngIf="authService.isLoggedInUserAdmin()"> -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-icon aria-hidden="false" aria-label="Settings and master data"
+                                fontIcon="settings"></mat-icon>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Control Panel
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <mat-selection-list>
+                        <mat-list-item role="listitem" style="padding: 0 !important;"
+                            [ngClass]="{'master-panel-open' : panelOpenState}">
+                            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-description> Masters </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <mat-selection-list>
+                                    <a [routerLink]="['itemGroup']">
+                                        <mat-list-item role="listitem"
+                                            routerLinkActive="route-active">User</mat-list-item>
+                                    </a>
+                                    <a [routerLink]="['item']"><mat-list-item role="listitem"
+                                            routerLinkActive="route-active">Company</mat-list-item>
+                                    </a>
+                                    <a [routerLink]="['godown']"><mat-list-item role="listitem"
+                                            routerLinkActive="route-active">Unit</mat-list-item>
+                                    </a>
+                                    <a [routerLink]="['bay']"><mat-list-item role="listitem"
+                                            routerLinkActive="route-active">Employee</mat-list-item>
+                                    </a>
+                                    <a [routerLink]="['user']"><mat-list-item role="listitem"
+                                            routerLinkActive="route-active">Holiday list</mat-list-item>
+                                    </a>
+                                    <a [routerLink]="['accessLogs']"><mat-list-item role="listitem"
+                                            routerLinkActive="route-active">Working days</mat-list-item>
+                                    </a>
+                                </mat-selection-list>
+                            </mat-expansion-panel>
+                        </mat-list-item>
+                        <a [routerLink]="['changePassword']"><mat-list-item role="listitem"
+                                routerLinkActive="route-active">Change Password</mat-list-item></a>
+                    </mat-selection-list>
+                </mat-expansion-panel>
+                <mat-expansion-panel [hideToggle]="true" (click)="logOut()">
+                    <mat-expansion-panel-header [expandedHeight]="'48px'" [collapsedHeight]="'48px'">
+                        <mat-panel-title>
+                            <mat-icon aria-hidden="false" aria-label="Reports" fontIcon="logout"></mat-icon>
+                        </mat-panel-title>
+                        <mat-panel-description>Logout </mat-panel-description>
+                    </mat-expansion-panel-header>
+                </mat-expansion-panel>
+            </div>
+        </mat-drawer>
+        <div style="position: sticky;        top: 0;        z-index: 999;">
+            <mat-toolbar style="z-index:999">
+                <mat-icon aria-hidden="false" aria-label="Toggle side menu" fontIcon="menu"
+                    (click)="drawer.toggle()"></mat-icon>
+            </mat-toolbar>
+        </div>
+        <router-outlet></router-outlet>
+    </mat-drawer-container>
+</div>

@@ -1,0 +1,69 @@
+<div style="padding: 15px">
+    <app-amrr-page-header [title]="'Attendance Entry'" [actionName]="''"></app-amrr-page-header>
+</div>
+<div>
+    <form class="form-container" *ngIf="formService.form" [formGroup]="formService.form" autocomplete="off">
+        <mat-form-field [style.width.px]="212">
+            <mat-label>From Date</mat-label>
+            <input matInput formControlName="attendanceDate" [matDatepicker]="fromDatePicker">
+            <mat-datepicker-toggle matIconSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromDatePicker> </mat-datepicker>
+        </mat-form-field>
+        <div style="display: inline-block">
+            <app-amrr-select-with-search [title]="'Unit'" [ctrl]="formService.form.controls.unitId"
+                [options]="formService.units"></app-amrr-select-with-search>
+        </div>
+        <button mat-flat-button color="primary" (click)="formService.getAttendanceRegister()">View</button>
+    </form>
+</div>
+<div *ngIf="formService.entries.length > 0; else noRegisterFound">
+    <div class="filter-container">
+        <span style="padding-bottom: 15px"> Attendance Date: {{formService.queriedDate | date}}</span>
+        <div>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Username" [formControl]="formService.presentEntriesFilter">
+                <mat-icon color="primary" matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="entries-container">
+        <div class="example-container">
+            <h2>Present</h2>
+            <div cdkDropList #presentList="cdkDropList" [cdkDropListData]="formService.filteredPresentEntries"
+                [cdkDropListConnectedTo]="[absentList, halfDayList]" class="example-list"
+                (cdkDropListDropped)="formService.drop($event)">
+                <div class="example-box" *ngFor="let item of formService.filteredPresentEntries" cdkDrag>
+                    {{item.employeeName}}</div>
+            </div>
+        </div>
+
+        <div class="example-container">
+            <h2>Absent</h2>
+            <div cdkDropList #absentList="cdkDropList" [cdkDropListData]="formService.absentEntries"
+                [cdkDropListConnectedTo]="[presentList, halfDayList]" class="example-list"
+                (cdkDropListDropped)="formService.drop($event)">
+                <div class="example-box" *ngFor="let item of formService.absentEntries" cdkDrag>{{item.employeeName}}
+                </div>
+            </div>
+        </div>
+
+        <div class="example-container">
+            <h2>Half Day</h2>
+            <div cdkDropList #halfDayList="cdkDropList" [cdkDropListData]="formService.halfDayEntries"
+                [cdkDropListConnectedTo]="[presentList, absentList]" class="example-list"
+                (cdkDropListDropped)="formService.drop($event)">
+                <div class="example-box" *ngFor="let item of formService.halfDayEntries" cdkDrag>{{item.employeeName}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <app-amrr-action-row [loading]="formService.saving" (add)="formService.addAttendance()"
+            (addAndClose)="formService.addAttendanceAndClose()" (close)="formService.cancel()"></app-amrr-action-row>
+    </div>
+</div>
+<ng-template #noRegisterFound>
+    <div style="display: flex; justify-content: center; align-items:center; height: 52vh;">
+        No Register found
+    </div>
+</ng-template>
