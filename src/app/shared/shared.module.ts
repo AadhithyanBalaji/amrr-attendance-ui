@@ -42,7 +42,7 @@ import { AmrrPageHeaderComponent } from './amrr-page-header/amrr-page-header.com
 import { AmrrSelectWithSearchComponent } from './amrr-select-with-search/amrr-select-with-search.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import {
   MatDialogConfig,
@@ -58,6 +58,8 @@ import {
   MomentDateAdapter,
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from '@angular/material-moment-adapter';
+import { CrudBrowserComponent } from './crud-browser/crud-browser.component';
+import { CrudEditorComponent } from './crud-browser/crud-editor.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +70,8 @@ import {
     AmrrModalComponent,
     AmrrLoadingComponent,
     AmrrActionRowComponent,
+    CrudBrowserComponent,
+    CrudEditorComponent,
   ],
   providers:[
     {
@@ -108,6 +112,7 @@ import {
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     A11yModule,
     CdkMenuModule,
     CdkTableModule,
@@ -185,6 +190,8 @@ import {
     AmrrModalComponent,
     AmrrLoadingComponent,
     AmrrActionRowComponent,
+    CrudBrowserComponent,
+    CrudEditorComponent,
   ],
 })
 export class SharedModule {}

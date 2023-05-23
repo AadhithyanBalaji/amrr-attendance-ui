@@ -17,7 +17,7 @@ import { AmrrHomeComponent } from './amrr-home/amrr-home.component';
 import { AttendanceRegisterEditorComponent } from './attendance-register/attendance-register-editor/attendance-register-editor.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { CompanyBrowserComponent } from './control-panel/company-browser/company-browser.component';
-import { CompanyEditorComponent } from './control-panel/company-browser/company-editor/company-editor.component';
+import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import { CompanyEditorComponent } from './control-panel/company-browser/company-
     AttendanceRegisterComponent,
     AttendanceRegisterEditorComponent,
     CompanyBrowserComponent,
-    CompanyEditorComponent,
+    UnitBrowserComponent
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,56 @@
-<div class="df">
-    <app-amrr-page-header [title]="'Company List'"
-        (onActionClicked)="browserService.addNewCompany()"></app-amrr-page-header>
-    <div class="grid-container">
-        <app-ammr-grid [columns]="browserService.columns" [dataSource]="browserService.dataSource"
-            [loading]="browserService.loading" (onEdit)="browserService.onEdit($event)"
-            (onDelete)="browserService.onDelete($event)"></app-ammr-grid>
-    </div>
-</div>
+<app-crud-browser [entityEndpoint]="'company'" [entityName]="'Company'" [columns]="columns"
+    [formTemplate]="formTemplate" [form]="form" (onSave)="onSave($event)">
+</app-crud-browser>
+
+<ng-template #formTemplate>
+    <form [formGroup]="form" autocomplete="off">
+        <div>
+            <mat-form-field>
+                <mat-label>Company Name</mat-label>
+                <input matInput [formControl]="form.controls.name" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Address Line 1</mat-label>
+                <input matInput type="text" [formControl]="form.controls.addressLine1">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Address Line 2</mat-label>
+                <input matInput type="text" [formControl]="form.controls.addressLine2">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Address Line 3</mat-label>
+                <input matInput type="text" [formControl]="form.controls.addressLine3">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Postal Code</mat-label>
+                <input matInput type="text" [formControl]="form.controls.postalCode">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>GST #</mat-label>
+                <input matInput [formControl]="form.controls.gstNo">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput type="email" [formControl]="form.controls.emailAddress">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Phone</mat-label>
+                <input matInput type="number" [formControl]="form.controls.phoneNumber">
+            </mat-form-field>
+        </div>
+    </form>
+</ng-template>

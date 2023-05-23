@@ -1,0 +1,18 @@
+<app-crud-browser [entityEndpoint]="'unit'" [entityName]="'Unit'" [columns]="columns" [formTemplate]="formTemplate"
+    [form]="form" (onSave)="onSave($event)" (onEdit)="onEdit($event)">
+</app-crud-browser>
+
+<ng-template #formTemplate>
+    <form [formGroup]="form" autocomplete="off">
+        <div>
+            <mat-form-field>
+                <mat-label>Unit Name</mat-label>
+                <input matInput [formControl]="form.controls.name" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <app-amrr-select-with-search [title]="'Company'" [ctrl]="form.controls.company"
+                [options]="companies"></app-amrr-select-with-search>
+        </div>
+    </form>
+</ng-template>
