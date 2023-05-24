@@ -9,6 +9,7 @@ import { AttendanceRegisterEditorComponent } from './attendance-register/attenda
 import { CompanyBrowserComponent } from './control-panel/company-browser/company-browser.component';
 import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.component';
 import { EmployeeBrowserComponent } from './control-panel/employee-browser/employee-browser.component';
+import { UserBrowserComponent } from './control-panel/user-browser/user-browser.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -35,6 +36,10 @@ const routes: Routes = [
       {
         path: 'employee',
         component: EmployeeBrowserComponent,
+      },
+      {
+        path: 'user',
+        component: UserBrowserComponent,
       },
     ],
   },

@@ -22,6 +22,7 @@ import { FormGroup } from '@angular/forms';
         [columns]="browserService.columns"
         [dataSource]="browserService.dataSource"
         [loading]="browserService.loading"
+        [hideDeleteActionForColumnKey]="'isSuperAdmin'"
         (onEdit)="browserService.onEdit($event)"
         (onDelete)="browserService.onDelete($event)"
       ></app-ammr-grid>
@@ -35,6 +36,7 @@ export class CrudBrowserComponent implements OnInit {
   @Input() columns: IAmmrGridColumn[];
   @Input() formTemplate: TemplateRef<any>;
   @Input() form: FormGroup<any>;
+  @Input() isCustomEditHandler: boolean;
   @Output() onSave = new EventEmitter<any>();
   @Output() onEdit = new EventEmitter<any>();
 
@@ -48,7 +50,8 @@ export class CrudBrowserComponent implements OnInit {
       this.formTemplate,
       this.onSave,
       this.onEdit,
-      this.form
+      this.form,
+      this.isCustomEditHandler
     );
   }
 }

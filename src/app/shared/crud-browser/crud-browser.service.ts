@@ -30,6 +30,7 @@ export class CrudBrowserService {
   onEditEmitter: EventEmitter<any>;
   onAdd: EventEmitter<any>;
   form: FormGroup<any>;
+  isCustomEditHandler: boolean;
 
   constructor(
     private readonly dialog: MatDialog,
@@ -45,7 +46,8 @@ export class CrudBrowserService {
     formTemplate: TemplateRef<any>,
     onSave: EventEmitter<any>,
     onEdit: EventEmitter<any>,
-    form: FormGroup<any>
+    form: FormGroup<any>,
+    isCustomEditHandler: boolean
   ) {
     this.entityEndpoint = entityEndpoint;
     this.entityName = entityName;
@@ -54,6 +56,7 @@ export class CrudBrowserService {
     this.onSave = onSave;
     this.onEditEmitter = onEdit;
     this.form = form;
+    this.isCustomEditHandler = isCustomEditHandler;
     this.getData();
   }
 
@@ -72,8 +75,9 @@ export class CrudBrowserService {
   }
 
   onEdit(event: any) {
-    this.onEditEmitter.emit(event);
-    this.form.patchValue(event);
+    this.isCustomEditHandler
+      ? this.onEditEmitter.emit(event)
+      : this.form.patchValue(event);
     this.dialog
       .open(CrudEditorComponent, {
         data: {
