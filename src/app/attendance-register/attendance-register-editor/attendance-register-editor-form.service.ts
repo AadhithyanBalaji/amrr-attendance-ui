@@ -40,7 +40,7 @@ export class AttendanceRegisterEditorFormService {
 
   init() {
     this.apiBusinessService
-      .get(`unit/1`)
+      .get(`unit/3`)
       .pipe(take(1))
       .subscribe((units: any) => {
         this.units = units.recordset as Unit[];
