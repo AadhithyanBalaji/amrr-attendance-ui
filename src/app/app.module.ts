@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +18,7 @@ import { AttendanceRegisterEditorComponent } from './attendance-register/attenda
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { CompanyBrowserComponent } from './control-panel/company-browser/company-browser.component';
 import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.component';
+import { EmployeeBrowserComponent } from './control-panel/employee-browser/employee-browser.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.
     AttendanceRegisterComponent,
     AttendanceRegisterEditorComponent,
     CompanyBrowserComponent,
-    UnitBrowserComponent
+    UnitBrowserComponent,
+    EmployeeBrowserComponent
   ],
   imports: [
     BrowserModule,

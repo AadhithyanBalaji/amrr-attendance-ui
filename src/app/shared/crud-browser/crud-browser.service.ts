@@ -110,7 +110,8 @@ export class CrudBrowserService {
     entityEndpoint: string,
     entityName: string,
     item: any,
-    event: any
+    event: any,
+    form: FormGroup<any>
   ) {
     this.apiBusinessService
       .post(entityEndpoint, item)
@@ -118,13 +119,13 @@ export class CrudBrowserService {
       .subscribe((_) => {
         event.closeDialog
           ? event.dialogRef.close(new DummyTypeaheadImpl())
-          : this.form.reset();
+          : null;
         this.snackBar.open(
           `${entityName} ${
             Helper.isNullOrUndefined(item.id) ? 'created!' : 'updated'
           }`
         );
-        this.formHelper.resetForm(this.form);
+        this.formHelper.resetForm(form);
       });
   }
 

@@ -82,7 +82,7 @@ export class CompanyBrowserComponent {
       item.gstNo = this.form.controls.gstNo.value!;
       item.emailAddress = this.form.controls.emailAddress.value!;
       item.phoneNumber = this.form.controls.phoneNumber.value!;
-      this.crudBrowserService.performSave('company', 'Company', item, event);
+      this.crudBrowserService.performSave('company', 'Company', item, event, this.form);
     }
   }
 }

@@ -62,15 +62,13 @@ export class UnitBrowserComponent implements OnInit {
       item.id = this.form.controls.id.value;
       item.name = this.form.controls.name.value!;
       item.companyId = (this.form.controls.company.value! as any).id;
-      this.crudBrowserService.performSave('unit', 'Unit', item, event);
+      this.crudBrowserService.performSave('unit', 'Unit', item, event, this.form);
     }
   }
 
   onEdit(event: any) {
     const company = this.companies.find((c) => c.id === event.companyId);
     event = { ...event, company: company };
-    console.log(event);
     this.form.patchValue(event);
-    console.log(this.form.value);
   }
 }
