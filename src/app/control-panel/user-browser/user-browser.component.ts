@@ -102,6 +102,5 @@ export class UserBrowserComponent implements OnInit {
     );
     event = { ...event, units: units };
     this.form.patchValue(event);
-    console.log(event, this.form.value);
   }
 }

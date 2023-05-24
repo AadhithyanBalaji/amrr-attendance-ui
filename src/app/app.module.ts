@@ -20,6 +20,7 @@ import { CompanyBrowserComponent } from './control-panel/company-browser/company
 import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.component';
 import { EmployeeBrowserComponent } from './control-panel/employee-browser/employee-browser.component';
 import { UserBrowserComponent } from './control-panel/user-browser/user-browser.component';
+import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday-browser.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { UserBrowserComponent } from './control-panel/user-browser/user-browser.
     CompanyBrowserComponent,
     UnitBrowserComponent,
     EmployeeBrowserComponent,
-    UserBrowserComponent
+    UserBrowserComponent,
+    HolidayBrowserComponent
   ],
   imports: [
     BrowserModule,

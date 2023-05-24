@@ -1,0 +1,33 @@
+<app-crud-browser [entityEndpoint]="'holiday'" [entityName]="'Holiday'" [columns]="columns"
+    [formTemplate]="formTemplate" [form]="form" [isCustomEditHandler]="true" (onSave)="onSave($event)"
+    (onEdit)="onEdit($event)">
+</app-crud-browser>
+
+<ng-template #formTemplate>
+    <form [formGroup]="form" autocomplete="off">
+        <div>
+            <mat-form-field>
+                <mat-label>Holiday Name</mat-label>
+                <input matInput [formControl]="form.controls.name" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Date</mat-label>
+                <input matInput formControlName="holidayDate" [matDatepicker]="fromDatePicker">
+                <mat-datepicker-toggle matIconSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromDatePicker> </mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Attendance Unit</mat-label>
+                <input matInput type="number" min="0.5" [formControl]="form.controls.attendanceUnit" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <app-amrr-multi-select-with-search [title]="'Companies'" [ctrl]="form.controls.companies"
+                [options]="companies"></app-amrr-multi-select-with-search>
+        </div>
+    </form>
+</ng-template>

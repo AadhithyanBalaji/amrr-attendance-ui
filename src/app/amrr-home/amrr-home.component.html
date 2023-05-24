@@ -35,35 +35,21 @@
                         </mat-panel-description>
                     </mat-expansion-panel-header>
                     <mat-selection-list>
-                        <mat-list-item role="listitem" style="padding: 0 !important;"
-                            [ngClass]="{'master-panel-open' : panelOpenState}">
-                            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-                                <mat-expansion-panel-header>
-                                    <mat-panel-description> Masters </mat-panel-description>
-                                </mat-expansion-panel-header>
-                                <mat-selection-list>
-                                    <a [routerLink]="['user']">
-                                        <mat-list-item role="listitem"
-                                            routerLinkActive="route-active">User</mat-list-item>
-                                    </a>
-                                    <a [routerLink]="['company']"><mat-list-item role="listitem"
-                                            routerLinkActive="route-active">Company</mat-list-item>
-                                    </a>
-                                    <a [routerLink]="['unit']"><mat-list-item role="listitem"
-                                            routerLinkActive="route-active">Unit</mat-list-item>
-                                    </a>
-                                    <a [routerLink]="['employee']"><mat-list-item role="listitem"
-                                            routerLinkActive="route-active">Employee</mat-list-item>
-                                    </a>
-                                    <a [routerLink]="['user']"><mat-list-item role="listitem"
-                                            routerLinkActive="route-active">Holiday list</mat-list-item>
-                                    </a>
-                                    <a [routerLink]="['accessLogs']"><mat-list-item role="listitem"
-                                            routerLinkActive="route-active">Working days</mat-list-item>
-                                    </a>
-                                </mat-selection-list>
-                            </mat-expansion-panel>
-                        </mat-list-item>
+                        <a [routerLink]="['user']">
+                            <mat-list-item role="listitem" routerLinkActive="route-active">User</mat-list-item>
+                        </a>
+                        <a [routerLink]="['company']"><mat-list-item role="listitem"
+                                routerLinkActive="route-active">Company</mat-list-item>
+                        </a>
+                        <a [routerLink]="['unit']"><mat-list-item role="listitem"
+                                routerLinkActive="route-active">Unit</mat-list-item>
+                        </a>
+                        <a [routerLink]="['employee']"><mat-list-item role="listitem"
+                                routerLinkActive="route-active">Employee</mat-list-item>
+                        </a>
+                        <a [routerLink]="['holiday']"><mat-list-item role="listitem"
+                                routerLinkActive="route-active">Company Holidays</mat-list-item>
+                        </a>
                         <a [routerLink]="['changePassword']"><mat-list-item role="listitem"
                                 routerLinkActive="route-active">Change Password</mat-list-item></a>
                     </mat-selection-list>
