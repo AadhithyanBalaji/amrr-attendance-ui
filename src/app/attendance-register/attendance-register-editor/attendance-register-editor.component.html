@@ -28,7 +28,7 @@
     </div>
     <div class="entries-container">
         <div class="example-container">
-            <h2>Present</h2>
+            <h2>Present ({{formService.filteredPresentEntries.length}})</h2>
             <div cdkDropList #presentList="cdkDropList" [cdkDropListData]="formService.filteredPresentEntries"
                 [cdkDropListConnectedTo]="[absentList, halfDayList]" class="example-list"
                 (cdkDropListDropped)="formService.drop($event)">
@@ -38,7 +38,7 @@
         </div>
 
         <div class="example-container">
-            <h2>Absent</h2>
+            <h2>Absent ({{formService.absentEntries.length}})</h2>
             <div cdkDropList #absentList="cdkDropList" [cdkDropListData]="formService.absentEntries"
                 [cdkDropListConnectedTo]="[presentList, halfDayList]" class="example-list"
                 (cdkDropListDropped)="formService.drop($event)">
@@ -48,7 +48,7 @@
         </div>
 
         <div class="example-container">
-            <h2>Half Day</h2>
+            <h2>Half Day ({{formService.halfDayEntries.length}})</h2>
             <div cdkDropList #halfDayList="cdkDropList" [cdkDropListData]="formService.halfDayEntries"
                 [cdkDropListConnectedTo]="[presentList, absentList]" class="example-list"
                 (cdkDropListDropped)="formService.drop($event)">
