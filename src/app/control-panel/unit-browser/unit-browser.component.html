@@ -1,5 +1,5 @@
 <app-crud-browser [entityEndpoint]="'unit'" [entityName]="'Unit'" [columns]="columns" [formTemplate]="formTemplate"
-    [form]="form" (onSave)="onSave($event)" (onEdit)="onEdit($event)">
+    [form]="form" [isCustomEditHandler]="true" (onSave)="onSave($event)" (onEdit)="onEdit($event)">
 </app-crud-browser>
 
 <ng-template #formTemplate>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {
   GridColumnType,
@@ -17,86 +17,14 @@ import { DatePipe } from '@angular/common';
   templateUrl: './employee-browser.component.html',
 })
 export class EmployeeBrowserComponent implements OnInit {
-  columns: IAmmrGridColumn[] = [
-    {
-      key: 'sno',
-      name: 'S.No.',
-      type: GridColumnType.Sno,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('name'),
-      name: 'Employee Name',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('designation'),
-      name: 'Designation',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('unitName'),
-      name: 'Unit',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('dateOfJoining'),
-      name: 'Date Of Joining',
-      type: GridColumnType.Date,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('uanNo'),
-      name: 'UAN #',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('esiNo'),
-      name: 'ESI #',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('aadharNo'),
-      name: 'Aadhar #',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('addressLine1'),
-      name: 'Address Line 1',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('addressLine2'),
-      name: 'Address Line 2',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('addressLine3'),
-      name: 'Address Line 3',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('emailAddress'),
-      name: 'e-Mail',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('phoneNumber'),
-      name: 'Phone #',
-      type: GridColumnType.String,
-    },
-    {
-      key: Helper.nameof<AmrrEmployee>('isActive'),
-      name: 'Is Active',
-      type: GridColumnType.Boolean,
-    },
-  ];
-
+  columns: IAmmrGridColumn[];
   units: AmrrUnit[] = [];
-
   form = new FormGroup({
     id: new FormControl(),
     firstName: new FormControl(null, [Validators.required]),
     lastName: new FormControl(null, [Validators.required]),
     designation: new FormControl(null, [Validators.required]),
+    salary: new FormControl(null, [Validators.required]),
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
     uanNo: new FormControl(null, [
@@ -140,6 +68,84 @@ export class EmployeeBrowserComponent implements OnInit {
       .subscribe(
         (data: any) => (this.units = data.recordset satisfies AmrrUnit[])
       );
+
+    this.columns = [
+      {
+        key: 'sno',
+        name: 'S.No.',
+        type: GridColumnType.Sno,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('name'),
+        name: 'Employee Name',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('designation'),
+        name: 'Designation',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('unitName'),
+        name: 'Unit',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('salary'),
+        name: 'Salary',
+        type: GridColumnType.Number,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('dateOfJoining'),
+        name: 'Date Of Joining',
+        type: GridColumnType.Date,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('uanNo'),
+        name: 'UAN #',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('esiNo'),
+        name: 'ESI #',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('aadharNo'),
+        name: 'Aadhar #',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('addressLine1'),
+        name: 'Address Line 1',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('addressLine2'),
+        name: 'Address Line 2',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('addressLine3'),
+        name: 'Address Line 3',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('emailAddress'),
+        name: 'e-Mail',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('phoneNumber'),
+        name: 'Phone #',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('isActive'),
+        name: 'Is Active',
+        type: GridColumnType.Boolean,
+      },
+    ];
   }
 
   onSave(event: any) {
@@ -149,8 +155,11 @@ export class EmployeeBrowserComponent implements OnInit {
       item.firstName = this.form.controls.firstName.value!;
       item.lastName = this.form.controls.lastName.value!;
       item.designation = this.form.controls.designation.value!;
+      item.salary = this.form.controls.salary.value!;
       item.unitId = (this.form.controls.unit.value as any).id;
-      item.dateOfJoining = this.getFormattedDate(this.form.controls.dateOfJoining.value!);
+      item.dateOfJoining = this.getFormattedDate(
+        this.form.controls.dateOfJoining.value!
+      );
       item.uanNo = this.form.controls.uanNo.value!;
       item.esiNo = this.form.controls.esiNo.value!;
       item.aadharNo = this.form.controls.aadharNo.value!;
@@ -163,7 +172,13 @@ export class EmployeeBrowserComponent implements OnInit {
       item.postalCode = this.form.controls.postalCode.value!;
       item.emailAddress = this.form.controls.emailAddress.value!;
       item.phoneNumber = this.form.controls.phoneNumber.value!;
-      this.crudBrowserService.performSave('employee', 'Employee', item, event, this.form);
+      this.crudBrowserService.performSave(
+        'employee',
+        'Employee',
+        item,
+        event,
+        this.form
+      );
     }
   }
 
