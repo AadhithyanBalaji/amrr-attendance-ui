@@ -1,0 +1,21 @@
+.filters-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.filters-form-container div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+@media (max-width: 870px) {
+  .filters-form-container,
+  .filters-form-container div {
+    gap: 15px;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+}

@@ -60,6 +60,7 @@ import {
 } from '@angular/material-moment-adapter';
 import { CrudBrowserComponent } from './crud-browser/crud-browser.component';
 import { CrudEditorComponent } from './crud-browser/crud-editor.component';
+import { AmrrReportFiltersComponent } from './amrr-report-filters/amrr-report-filters.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { CrudEditorComponent } from './crud-browser/crud-editor.component';
     AmrrActionRowComponent,
     CrudBrowserComponent,
     CrudEditorComponent,
+    AmrrReportFiltersComponent
   ],
   providers:[
     {
@@ -192,6 +194,7 @@ import { CrudEditorComponent } from './crud-browser/crud-editor.component';
     AmrrActionRowComponent,
     CrudBrowserComponent,
     CrudEditorComponent,
+    AmrrReportFiltersComponent
   ],
 })
 export class SharedModule {}

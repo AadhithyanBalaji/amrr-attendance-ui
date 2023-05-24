@@ -1,4 +1,10 @@
 <div class="df">
     <app-amrr-page-header [title]="'Attendance Register'"
         (onActionClicked)="formService.navigateToAddAttendance()"></app-amrr-page-header>
+    <div class="grid-container">
+        <app-amrr-report-filters (onViewClicked)="formService.onViewClicked($event)"></app-amrr-report-filters>
+        <mat-divider></mat-divider>
+        <app-ammr-grid [columns]="formService.columns" [dataSource]="formService.dataSource"
+            [loading]="formService.loading"></app-ammr-grid>
+    </div>
 </div>
