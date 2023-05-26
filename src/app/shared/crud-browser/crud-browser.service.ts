@@ -63,13 +63,7 @@ export class CrudBrowserService {
   addNewEntity() {
     this.formHelper.resetForm(this.form);
     this.dialog
-      .open(CrudEditorComponent, {
-        data: {
-          event: null,
-          formTemplate: this.formTemplate,
-          onSave: this.onSave,
-        },
-      })
+      .open(CrudEditorComponent, this.buildEditorData(null))
       .afterClosed()
       .subscribe((result) => (result ? this.getData() : null));
   }
@@ -79,13 +73,7 @@ export class CrudBrowserService {
       ? this.onEditEmitter.emit(event)
       : this.form.patchValue(event);
     this.dialog
-      .open(CrudEditorComponent, {
-        data: {
-          event: event,
-          formTemplate: this.formTemplate,
-          onSave: this.onSave,
-        },
-      })
+      .open(CrudEditorComponent, this.buildEditorData(event))
       .afterClosed()
       .pipe(take(1))
       .subscribe((result) =>
@@ -149,5 +137,16 @@ export class CrudBrowserService {
       .delete(this.entityEndpoint, id)
       .pipe(take(1))
       .subscribe((_) => this.getData());
+  }
+
+  private buildEditorData(event: any) {
+    return {
+      data: {
+        event: event,
+        formTemplate: this.formTemplate,
+        onSave: this.onSave,
+        form: this.form
+      },
+    };
   }
 }

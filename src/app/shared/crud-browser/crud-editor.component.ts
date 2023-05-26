@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IAmrrTypeahead } from 'src/app/shared/amrr-typeahead.interface';
+import Helper from '../helper';
 
 export class DummyTypeaheadImpl implements IAmrrTypeahead {
   id: number;
@@ -53,6 +54,9 @@ export class CrudEditorComponent {
   }
 
   saveEntity(closeDialog = false) {
+    if (Helper.isTruthy(this.data.form)) {
+      this.data.form.markAllAsTouched();
+    }
     this.data.onSave.emit({
       closeDialog: closeDialog,
       dialogRef: this.dialogRef,

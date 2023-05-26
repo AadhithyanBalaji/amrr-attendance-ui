@@ -27,28 +27,16 @@ export class EmployeeBrowserComponent implements OnInit {
     salary: new FormControl(null, [Validators.required]),
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
-    uanNo: new FormControl(null, [
-      Validators.required,
-      Validators.minLength(12),
-    ]),
-    esiNo: new FormControl(null, [
-      Validators.required,
-      Validators.minLength(17),
-    ]),
-    aadharNo: new FormControl(null, [
-      Validators.required,
-      Validators.minLength(12),
-    ]),
-    isActive: new FormControl('asdf', [Validators.required]),
+    uanNo: new FormControl(null, [Validators.minLength(12)]),
+    esiNo: new FormControl(null, [Validators.minLength(17)]),
+    aadharNo: new FormControl(null, [Validators.minLength(12)]),
+    isActive: new FormControl(null, [Validators.required]),
     inActiveSince: new FormControl(null),
     addressLine1: new FormControl(null, [Validators.required]),
     addressLine2: new FormControl(null),
     addressLine3: new FormControl(null),
     postalCode: new FormControl(null, [Validators.required]),
-    emailAddress: new FormControl(null, [
-      Validators.required,
-      Validators.email,
-    ]),
+    emailAddress: new FormControl(null, [Validators.email]),
     phoneNumber: new FormControl(null, [
       Validators.required,
       Validators.minLength(10),
