@@ -5,7 +5,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../auth.service';
 
 @Component({

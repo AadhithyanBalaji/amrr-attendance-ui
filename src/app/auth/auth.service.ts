@@ -17,56 +17,48 @@ export class AuthService {
 
   constructor(
     private readonly router: Router,
-    //private readonly apiBusinessService: ApiBusinessService,
+    private readonly apiBusinessService: ApiBusinessService,
     private readonly snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
     private readonly autoLogoutService: AutoLogoutService
   ) {
-    const authData = new AuthData();
-    authData.userId = 1//+res.data.userId;
-    authData.isAdmin = true;
-      //Helper.isTruthy(res.data.isAdmin) && res.data.isAdmin === '1';
-    authData.userName = "1"// res.data.userName;
-    authData.token = ""//res.data.token;
-    localStorage.setItem('authData', JSON.stringify(authData));
     this.isLoggedIn();
   }
 
   login(username: string, password: string) {
     this.isLoggingIn = true;
-    // this.apiBusinessService
-    //   .post('auth', { loginName: username, password: password })
-    //   .pipe(take(1))
-    //   .subscribe(
-    //     (res: any) => {
-    //       if (res.success) {
+    this.apiBusinessService
+      .post('attendanceAuth', { loginName: username, password: password })
+      .pipe(take(1))
+      .subscribe(
+        (res: any) => {
+          if (res.success) {
             this.setIsAuthenticated(true);
             const authData = new AuthData();
-            authData.userId = 1//+res.data.userId;
-            authData.isAdmin = true;
-              //Helper.isTruthy(res.data.isAdmin) && res.data.isAdmin === '1';
-            authData.userName = "1"// res.data.userName;
-            authData.token = ""//res.data.token;
+            authData.userId = +res.data.userId;
+            authData.isAdmin =
+              Helper.isTruthy(res.data.isAdmin) && res.data.isAdmin === '1';
+            authData.userName = res.data.userName;
+            authData.token = res.data.token;
             localStorage.setItem('authData', JSON.stringify(authData));
             this.router.navigate(['register']);
-    //       } else {
-    //         this.router.navigate(['login']);
-    //       }
-    //       this.autoLogoutService.init();
-    //       this.isLoggingIn = false;
-    //     },
-    //     (error) => {
-    //       this.displaySnackBar(error?.error?.message);
-    //     }
-    //   );
+          } else {
+            this.router.navigate(['login']);
+          }
+          this.autoLogoutService.init();
+          this.isLoggingIn = false;
+        },
+        (error) => {
+          this.displaySnackBar(error?.error?.message);
+        }
+      );
   }
 
   isLoggedIn() {
-    // const storedIsAuthenticated = localStorage.getItem('isAuthenticated');
-    // return (
-    //   Helper.isTruthy(storedIsAuthenticated) && storedIsAuthenticated === '1'
-    // );
-    return true;
+    const storedIsAuthenticated = localStorage.getItem('isAuthenticated');
+    return (
+      Helper.isTruthy(storedIsAuthenticated) && storedIsAuthenticated === '1'
+    );
   }
 
   logOut(force = false) {
@@ -92,21 +84,21 @@ export class AuthService {
   }
 
   changePwd(loginName: string, password: string, newPassword: string) {
-    // this.apiBusinessService
-    //   .post('auth/changePassword', {
-    //     loginName: loginName,
-    //     password: password,
-    //     newPassword: newPassword,
-    //   })
-    //   .pipe(take(1))
-    //   .subscribe((res: any) => {
-    //     if (Helper.isTruthy(res.Message) && res.Message !== '') {
-    //       this.displaySnackBar(res.Message);
-    //     } else {
-    //       this.displaySnackBar('Successfully changed password');
-    //       this.logOut(true);
-    //     }
-    //   });
+    this.apiBusinessService
+      .post('attendanceAuth/changePassword', {
+        loginName: loginName,
+        password: password,
+        newPassword: newPassword,
+      })
+      .pipe(take(1))
+      .subscribe((res: any) => {
+        if (Helper.isTruthy(res.Message) && res.Message !== '') {
+          this.displaySnackBar(res.Message);
+        } else {
+          this.displaySnackBar('Successfully changed password');
+          this.logOut(true);
+        }
+      });
   }
 
   getUserId(): number {
@@ -140,15 +132,15 @@ export class AuthService {
 
   private performLogout() {
     const userId = this.getUserId();
-    // this.apiBusinessService
-    //   .get(`auth/logout/${userId}`)
-    //   .pipe(take(1))
-    //   .subscribe((res: any) => {
-    //     this.displaySnackBar('Logged out');
-    //     this.setIsAuthenticated(false);
-    //     localStorage.setItem('authData', '');
-    //     this.router.navigate(['login']);
-    //   });
+    this.apiBusinessService
+      .get(`attendanceAuth/logout/${userId}`)
+      .pipe(take(1))
+      .subscribe((_) => {
+        this.displaySnackBar('Logged out');
+        this.setIsAuthenticated(false);
+        localStorage.setItem('authData', '');
+        this.router.navigate(['login']);
+      });
   }
 
   private displaySnackBar(msg: string) {

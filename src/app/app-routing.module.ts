@@ -11,6 +11,8 @@ import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.
 import { EmployeeBrowserComponent } from './control-panel/employee-browser/employee-browser.component';
 import { UserBrowserComponent } from './control-panel/user-browser/user-browser.component';
 import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday-browser.component';
+import { AdminGuard } from './auth/admin.guard';
+import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -29,22 +31,32 @@ const routes: Routes = [
       {
         path: 'company',
         component: CompanyBrowserComponent,
+        canActivate: [AdminGuard],
       },
       {
         path: 'unit',
         component: UnitBrowserComponent,
+        canActivate: [AdminGuard],
       },
       {
         path: 'employee',
         component: EmployeeBrowserComponent,
+        canActivate: [AdminGuard],
       },
       {
         path: 'user',
         component: UserBrowserComponent,
+        canActivate: [AdminGuard],
       },
       {
         path: 'holiday',
         component: HolidayBrowserComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: 'changePassword',
+        component: AmrrChangePasswordComponent,
+        canActivate: [AdminGuard],
       },
     ],
   },

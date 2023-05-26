@@ -21,6 +21,7 @@ import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.
 import { EmployeeBrowserComponent } from './control-panel/employee-browser/employee-browser.component';
 import { UserBrowserComponent } from './control-panel/user-browser/user-browser.component';
 import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday-browser.component';
+import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday
     UnitBrowserComponent,
     EmployeeBrowserComponent,
     UserBrowserComponent,
-    HolidayBrowserComponent
+    HolidayBrowserComponent,
+    AmrrChangePasswordComponent
   ],
   imports: [
     BrowserModule,

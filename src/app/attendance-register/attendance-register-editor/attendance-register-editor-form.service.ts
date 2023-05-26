@@ -11,6 +11,7 @@ import Helper from 'src/app/shared/helper';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { AmrrModalComponent } from 'src/app/shared/amrr-modal/amrr-modal.component';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Injectable()
 export class AttendanceRegisterEditorFormService {
@@ -35,23 +36,27 @@ export class AttendanceRegisterEditorFormService {
     private readonly apiBusinessService: ApiBusinessService,
     private readonly datePipe: DatePipe,
     private readonly snackBar: MatSnackBar,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly authService: AuthService
   ) {}
 
   init() {
-    this.apiBusinessService
-      .get(`unit/3`)
-      .pipe(take(1))
-      .subscribe((units: any) => {
-        this.units = units.recordset as Unit[];
-        this.form = new FormGroup({
-          attendanceDate: new FormControl(new Date(), [Validators.required]),
-          unitId: new FormControl(units.length > 0 ? units[0] : null, [
-            Validators.required,
-          ]),
+    const userId = this.authService.getUserId();
+    if (Helper.isTruthy(userId)) {
+      this.apiBusinessService
+        .get(`unit/${userId}`)
+        .pipe(take(1))
+        .subscribe((units: any) => {
+          this.units = units.recordset as Unit[];
+          this.form = new FormGroup({
+            attendanceDate: new FormControl(new Date(), [Validators.required]),
+            unitId: new FormControl(units.length > 0 ? units[0] : null, [
+              Validators.required,
+            ]),
+          });
+          this.setupFormListeners();
         });
-        this.setupFormListeners();
-      });
+    }
   }
 
   addAttendance() {

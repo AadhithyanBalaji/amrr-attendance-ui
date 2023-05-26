@@ -1,4 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { debounceTime, Subject } from 'rxjs';
 
@@ -12,6 +13,7 @@ export class AutoLogoutService {
 
   constructor(
     private readonly router: Router,
+    private readonly dialog: MatDialog,
     private readonly ngZone: NgZone
   ) {
     this.resetIdleTimer$.pipe(debounceTime(1000)).subscribe((_) => {
@@ -72,6 +74,7 @@ export class AutoLogoutService {
       if (isTimeout) {
         this.clearTimers();
         localStorage.setItem('autoLogOff', 'true');
+        this.dialog.closeAll();
         this.router.navigate(['login']);
       }
     });
