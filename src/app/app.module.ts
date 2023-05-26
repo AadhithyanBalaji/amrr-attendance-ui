@@ -15,13 +15,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AmrrLoginComponent } from './auth/amrr-login/amrr-login.component';
 import { AmrrHomeComponent } from './amrr-home/amrr-home.component';
 import { AttendanceRegisterEditorComponent } from './attendance-register/attendance-register-editor/attendance-register-editor.component';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CompanyBrowserComponent } from './control-panel/company-browser/company-browser.component';
 import { UnitBrowserComponent } from './control-panel/unit-browser/unit-browser.component';
 import { EmployeeBrowserComponent } from './control-panel/employee-browser/employee-browser.component';
 import { UserBrowserComponent } from './control-panel/user-browser/user-browser.component';
 import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday-browser.component';
 import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-ch
     EmployeeBrowserComponent,
     UserBrowserComponent,
     HolidayBrowserComponent,
-    AmrrChangePasswordComponent
+    AmrrChangePasswordComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +47,7 @@ import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-ch
     HttpClientModule,
     AppRoutingModule,
     SharedModule,
-    DragDropModule
+    DragDropModule,
   ],
   providers: [
     DatePipe,

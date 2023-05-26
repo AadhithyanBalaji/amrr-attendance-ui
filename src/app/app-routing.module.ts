@@ -13,6 +13,7 @@ import { UserBrowserComponent } from './control-panel/user-browser/user-browser.
 import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday-browser.component';
 import { AdminGuard } from './auth/admin.guard';
 import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -60,6 +61,8 @@ const routes: Routes = [
       },
     ],
   },
+  { path: 'noAccess', pathMatch: 'full', component: PageNotFoundComponent },
+  { path: '**', pathMatch: 'full', component: PageNotFoundComponent },
 ];
 
 @NgModule({
