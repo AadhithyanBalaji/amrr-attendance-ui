@@ -4,7 +4,7 @@ export const environment = {
     apiURL: 'http://localhost:3000',
   },
   dev: {
-    uiURL: 'https://www.attendance.amrrmdmpl.in/login',
+    uiURL: 'https://www.attendance.amrrmdmpl.in',
     apiURL: 'https://a1-dev-mdmpl-api.azurewebsites.net',
   },
   prod: {
