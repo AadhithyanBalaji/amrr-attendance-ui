@@ -37,9 +37,7 @@ export class ApiBusinessService {
   }
 
   private setBaseUrl(): string {
-    if (window.location.href.indexOf(environment.dev.uiURL) !== -1)
-      return environment.dev.apiURL;
-    else if (window.location.href.indexOf(environment.local.uiURL) !== -1)
+    if (window.location.href.indexOf(environment.local.uiURL) !== -1)
       return environment.local.apiURL;
     else if (window.location.href.indexOf(environment.prod.uiURL) !== -1)
       return environment.prod.apiURL;
