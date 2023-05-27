@@ -28,7 +28,7 @@ export class EmployeeBrowserComponent implements OnInit {
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
     uanNo: new FormControl(null, [Validators.minLength(12)]),
-    esiNo: new FormControl(null, [Validators.minLength(17)]),
+    esiNo: new FormControl(null, [Validators.minLength(10)]),
     aadharNo: new FormControl(null, [Validators.minLength(12)]),
     isActive: new FormControl(null, [Validators.required]),
     inActiveSince: new FormControl(null),

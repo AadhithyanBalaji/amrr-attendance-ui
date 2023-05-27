@@ -108,17 +108,22 @@ export class CrudBrowserService {
     this.apiBusinessService
       .post(entityEndpoint, item)
       .pipe(take(1))
-      .subscribe((_) => {
-        event.closeDialog
-          ? event.dialogRef.close(new DummyTypeaheadImpl())
-          : null;
-        this.snackBar.open(
-          `${entityName} ${
-            Helper.isNullOrUndefined(item.id) ? 'created!' : 'updated'
-          }`
-        );
-        this.formHelper.resetForm(form);
-      });
+      .subscribe(
+        (_) => {
+          event.closeDialog
+            ? event.dialogRef.close(new DummyTypeaheadImpl())
+            : null;
+          this.snackBar.open(
+            `${entityName} ${
+              Helper.isNullOrUndefined(item.id) ? 'created!' : 'updated'
+            }`
+          );
+          this.formHelper.resetForm(form);
+        },
+        (error) => {
+          this.snackBar.open(error?.error, '', { duration: 5000 });
+        }
+      );
   }
 
   private getData() {
@@ -145,7 +150,7 @@ export class CrudBrowserService {
         event: event,
         formTemplate: this.formTemplate,
         onSave: this.onSave,
-        form: this.form
+        form: this.form,
       },
     };
   }

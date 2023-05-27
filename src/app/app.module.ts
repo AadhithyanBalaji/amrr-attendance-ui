@@ -54,10 +54,10 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
     DecimalPipe,
     ApiBusinessService,
     AmrrLoadingDialogService,
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: GlobalErrorHandler,
-    // },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpLoadingInterceptor,
