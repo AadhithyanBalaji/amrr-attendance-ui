@@ -42,3 +42,25 @@ logout-div {
   font-size: 14px;
   font-weight: 500;
 }
+
+.menu-link {
+  padding: 8px 0 9px 25px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.menu-link:hover{
+  background-color: #F5F1D2;
+}
+
+.ml-icon {
+  color: rgba(0, 0, 0, 0.87);
+  flex-grow: 1;
+}
+
+.ml-text {
+  color: rgba(0, 0, 0, 0.54);
+  flex-grow: 2;
+  margin-left: 6px;
+}

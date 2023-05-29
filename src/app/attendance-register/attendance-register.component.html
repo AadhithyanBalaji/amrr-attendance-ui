@@ -5,6 +5,6 @@
         <app-amrr-report-filters (onViewClicked)="formService.onViewClicked($event)"></app-amrr-report-filters>
         <mat-divider></mat-divider>
         <app-ammr-grid [columns]="formService.columns" [dataSource]="formService.dataSource"
-            [loading]="formService.loading"></app-ammr-grid>
+            [loading]="formService.loading" [readOnly]="true"></app-ammr-grid>
     </div>
 </div>
