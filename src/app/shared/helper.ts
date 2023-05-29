@@ -1,3 +1,5 @@
+import { DatePipe } from '@angular/common';
+
 export default class Helper {
   public static isTruthy(value: any) {
     return value !== null && value !== undefined;
@@ -14,4 +16,13 @@ export default class Helper {
   }
 
   public static nameof = <T>(name: keyof T) => name;
+
+  public static getAttendanceDate(date: any, datePipe: DatePipe) {
+    return (
+      datePipe.transform(
+        new Date(new Date(date).setHours(0, 0, 0, 0)),
+        'YYYY-MM-dd HH:mm:ss'
+      ) ?? ''
+    );
+  }
 }

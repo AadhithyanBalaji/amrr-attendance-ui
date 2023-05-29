@@ -23,6 +23,7 @@ import { UserBrowserComponent } from './control-panel/user-browser/user-browser.
 import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday-browser.component';
 import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
     HolidayBrowserComponent,
     AmrrChangePasswordComponent,
     PageNotFoundComponent,
+    PayslipBrowserComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,10 +56,10 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
     DecimalPipe,
     ApiBusinessService,
     AmrrLoadingDialogService,
-    {
-      provide: ErrorHandler,
-      useClass: GlobalErrorHandler,
-    },
+    // {
+    //   provide: ErrorHandler,
+    //   useClass: GlobalErrorHandler,
+    // },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpLoadingInterceptor,

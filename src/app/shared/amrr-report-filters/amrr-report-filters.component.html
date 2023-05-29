@@ -29,9 +29,9 @@
                     [options]="formService.items"></app-amrr-select-with-search>
                 <app-amrr-select-with-search [title]="'Batch No.'" [ctrl]="formService.form.controls.batchId"
                     [options]="formService.batches"></app-amrr-select-with-search>-->
+            </div>
+            <div class="action-container">
                 <button mat-flat-button color="primary" (click)="onView()">View</button>
-                <!--<mat-checkbox *ngIf="showCheckBox" [formControl]="formService.form.controls.checkBox"
-                    color="primary">{{checkBoxText}}</mat-checkbox>-->
             </div>
         </div>
     </form>

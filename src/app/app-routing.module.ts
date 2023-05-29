@@ -14,6 +14,7 @@ import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday
 import { AdminGuard } from './auth/admin.guard';
 import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -27,6 +28,10 @@ const routes: Routes = [
       {
         path: 'attendanceEditor',
         component: AttendanceRegisterEditorComponent,
+      },
+      {
+        path: 'payslip',
+        component: PayslipBrowserComponent,
       },
       // control panel routes
       {

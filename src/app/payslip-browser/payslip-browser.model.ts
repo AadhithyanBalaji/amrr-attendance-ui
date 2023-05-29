@@ -1,0 +1,30 @@
+export class PayslipBrowser {
+  id: number;
+  payCycle: string;
+  employeeName: string;
+  employeeAddressLine1: string;
+  employeeAddressLine2: string;
+  employeeAddressLine3: string;
+  employeePostalCode: string;
+  employeePhoneNumber: string;
+  uanNo: string;
+  esiNo: string;
+  aadharNo: string;
+  unitName: string;
+  companyName: string;
+  companyAddressLine1: string;
+  companyAddressLine2: string;
+  companyAddressLine3: string;
+  companyPostalCode: string;
+  companyPhoneNumber: string;
+  companyEmailAddress: string;
+  totalPay: number;
+  esiComponent: number;
+  pfComponent: number;
+  bonusComponent: number;
+  bonusId: number;
+  grossSalary: number;
+  workingDays: number;
+  offDays: number;
+  companyHolidays: number;
+}
