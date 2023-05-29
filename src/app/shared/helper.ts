@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { IAmrrTypeahead } from './amrr-typeahead.interface';
 
 export default class Helper {
   public static isTruthy(value: any) {
@@ -24,5 +25,17 @@ export default class Helper {
         'YYYY-MM-dd HH:mm:ss'
       ) ?? ''
     );
+  }
+
+  public static getUnique(arr: IAmrrTypeahead[]) {
+    let mapObj = new Map();
+
+    arr.forEach((v) => {
+      let prevValue = mapObj.get(v.name);
+      if (!prevValue || prevValue.type === 'new') {
+        mapObj.set(v.name, v);
+      }
+    });
+    return [...mapObj.values()];
   }
 }

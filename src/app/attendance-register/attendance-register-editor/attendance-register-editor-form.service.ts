@@ -12,6 +12,7 @@ import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { AmrrModalComponent } from 'src/app/shared/amrr-modal/amrr-modal.component';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AttendanceRegisterEditorFormService {
@@ -37,7 +38,8 @@ export class AttendanceRegisterEditorFormService {
     private readonly datePipe: DatePipe,
     private readonly snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
   init() {
@@ -92,7 +94,24 @@ export class AttendanceRegisterEditorFormService {
 
   addAttendanceAndClose() {}
 
-  cancel() {}
+  cancel() {
+    if (this.areEntriesDirty) {
+      this.dialog
+        .open(AmrrModalComponent, {
+          data: {
+            title: 'Unsaved Changes',
+            body: `You will lose changes to attendance entries for the date ${this.getAttendanceDate()}. Are you sure to exit?`,
+          },
+        })
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe((result) =>
+          result ? this.router.navigate(['register']) : null
+        );
+    } else {
+      this.router.navigate(['register']);
+    }
+  }
 
   drop(event: any) {
     this.areEntriesDirty = true;

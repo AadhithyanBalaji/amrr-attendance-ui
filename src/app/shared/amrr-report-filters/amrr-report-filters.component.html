@@ -1,7 +1,7 @@
 <div style="padding-top: 15px">
-    <!-- <div *ngIf="!formService.form" class="center-align">
+    <div *ngIf="!form" class="center-align">
         <mat-spinner></mat-spinner>
-    </div> -->
+    </div>
     <form *ngIf="form" [formGroup]="form" autocomplete="off">
         <div class="filters-form-container">
             <div>
@@ -22,13 +22,7 @@
                 <app-amrr-select-with-search [title]="'Company'" [ctrl]="form.controls.company"
                     [options]="companies"></app-amrr-select-with-search>
                 <app-amrr-select-with-search [title]="'Unit'" [ctrl]="form.controls.unit"
-                    [options]="units"></app-amrr-select-with-search>
-                <!-- <app-amrr-select-with-search [title]="'Employee'" [ctrl]="formService.form.controls.itemGroupId"
-                    [options]="formService.itemGroups"></app-amrr-select-with-search>
-                <app-amrr-select-with-search [title]="'Item Name'" [ctrl]="formService.form.controls.itemId"
-                    [options]="formService.items"></app-amrr-select-with-search>
-                <app-amrr-select-with-search [title]="'Batch No.'" [ctrl]="formService.form.controls.batchId"
-                    [options]="formService.batches"></app-amrr-select-with-search>-->
+                    [options]="filteredUnits"></app-amrr-select-with-search>
             </div>
             <div class="action-container">
                 <button mat-flat-button color="primary" (click)="onView()">View</button>

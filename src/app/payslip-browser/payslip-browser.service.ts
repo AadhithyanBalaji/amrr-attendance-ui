@@ -83,11 +83,15 @@ export class PayslipBrowserService {
       type: GridColumnType.Number,
     },
   ];
+
   loading = false;
   actionLoading = false;
   dataSource: MatTableDataSource<PayslipBrowser, MatPaginator>;
+
   companies: AmrrCompany[] = [];
+  filteredUnits: AmrrUnit[] = [];
   units: AmrrUnit[] = [];
+
   form = new FormGroup({
     month: new FormControl(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -105,14 +109,20 @@ export class PayslipBrowserService {
   ) {}
 
   init() {
-    combineLatest([
-      this.apiBusinessService.get('company'),
-      this.apiBusinessService.get('unit'),
-    ])
+    this.apiBusinessService
+      .get(`unit/${this.authService.getUserId()}`)
       .pipe(take(1))
       .subscribe((data: any) => {
-        this.companies = data[0].recordset as AmrrCompany[];
-        this.units = data[1].recordset as AmrrUnit[];
+        this.filteredUnits = this.units = data.recordset as AmrrUnit[];
+        const companyNames = this.units.map((u) => {
+          return { id: u.companyId, name: u.companyName };
+        });
+        this.companies = Helper.getUnique(companyNames);
+        this.form.controls.company.valueChanges.subscribe((company: any) => {
+          this.filteredUnits = this.units.filter(
+            (u) => u.companyId === company.id
+          );
+        });
       });
   }
 

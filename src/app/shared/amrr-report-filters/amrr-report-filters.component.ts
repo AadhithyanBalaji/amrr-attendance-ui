@@ -1,26 +1,17 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  TemplateRef,
-} from '@angular/core';
-
-import { AmrrReportFilters } from './amrr-report-filters.model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiBusinessService } from '../api-business.service';
-import { AmrrCompany } from 'src/app/control-panel/company-browser/amrr-company.model';
 import { AmrrUnit } from 'src/app/control-panel/unit-browser/amrr-unit.model';
-import { combineLatest, filter, take } from 'rxjs';
+import { take } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import Helper from '../helper';
+import { AuthService } from 'src/app/auth/auth.service';
+import { IAmrrTypeahead } from '../amrr-typeahead.interface';
 
 @Component({
   selector: 'app-amrr-report-filters',
   templateUrl: './amrr-report-filters.component.html',
   styleUrls: ['./amrr-report-filters.component.css'],
-  //providers: [AmrrReportFiltersFormService],
 })
 export class AmrrReportFiltersComponent implements OnInit {
   @Input() transactionTypeId: number;
@@ -29,33 +20,36 @@ export class AmrrReportFiltersComponent implements OnInit {
   @Input() checkBoxText: string;
   @Output() onViewClicked = new EventEmitter<any>();
 
-  companies: AmrrCompany[] = [];
+  companies: IAmrrTypeahead[] = [];
   units: AmrrUnit[] = [];
+  filteredUnits: AmrrUnit[] = [];
   form = new FormGroup({
     fromDate: new FormControl(new Date()),
     toDate: new FormControl(new Date()),
     company: new FormControl(null, [Validators.required]),
     unit: new FormControl(null),
   });
-  //constructor(readonly formService: AmrrReportFiltersFormService) {}
   constructor(
-    readonly apiBusinessService: ApiBusinessService,
-    readonly datePipe: DatePipe
+    private readonly apiBusinessService: ApiBusinessService,
+    private readonly datePipe: DatePipe,
+    private readonly authService: AuthService
   ) {}
+
   ngOnInit(): void {
-    // this.formService.init(
-    //   this.onViewClicked,
-    //   this.enableAllOptions,
-    //   this.transactionTypeId
-    // );
-    combineLatest([
-      this.apiBusinessService.get('company'),
-      this.apiBusinessService.get('unit'),
-    ])
+    this.apiBusinessService
+      .get(`unit/${this.authService.getUserId()}`)
       .pipe(take(1))
       .subscribe((data: any) => {
-        this.companies = data[0].recordset as AmrrCompany[];
-        this.units = data[1].recordset as AmrrUnit[];
+        this.filteredUnits = this.units = data.recordset as AmrrUnit[];
+        const companyNames = this.units.map((u) => {
+          return { id: u.companyId, name: u.companyName };
+        });
+        this.companies = Helper.getUnique(companyNames);
+        this.form.controls.company.valueChanges.subscribe((company: any) => {
+          this.filteredUnits = this.units.filter(
+            (u) => u.companyId === company.id
+          );
+        });
       });
   }
 
