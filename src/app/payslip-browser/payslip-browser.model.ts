@@ -27,4 +27,5 @@ export class PayslipBrowser {
   workingDays: number;
   offDays: number;
   companyHolidays: number;
+  preparedByUser: string;
 }

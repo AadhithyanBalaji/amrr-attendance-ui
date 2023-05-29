@@ -3,7 +3,6 @@ import {
   GridColumnType,
   IAmmrGridColumn,
 } from '../shared/ammr-grid/ammr-grid-column.interface';
-import { AttendanceBrowser } from '../attendance-register/attendance-browser.model';
 import Helper from '../shared/helper';
 import { PayslipBrowser } from './payslip-browser.model';
 import { ApiBusinessService } from '../shared/api-business.service';
@@ -16,6 +15,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AmrrCompany } from '../control-panel/company-browser/amrr-company.model';
 import { AmrrUnit } from '../control-panel/unit-browser/amrr-unit.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PdfService } from './pdf.service';
 
 @Injectable({
   providedIn: 'root',
@@ -100,7 +100,8 @@ export class PayslipBrowserService {
     private readonly apiBusinessService: ApiBusinessService,
     private readonly datePipe: DatePipe,
     private readonly authService: AuthService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBar: MatSnackBar,
+    private readonly pdfService: PdfService
   ) {}
 
   init() {
@@ -121,7 +122,7 @@ export class PayslipBrowserService {
     this.form.controls.month.setValue(event.toDate());
   }
 
-  onViewClicked() {
+  onViewClicked(printPayslips = false) {
     const filterData = this.getFilterData();
     if (Helper.isNullOrUndefined(filterData)) {
       return;
@@ -132,6 +133,9 @@ export class PayslipBrowserService {
       .pipe(take(1))
       .subscribe((results: any) => {
         this.dataSource = new MatTableDataSource(results.recordset);
+        if (printPayslips) {
+          this.pdfService.generatePayslips(filterData, results.recordset);
+        }
         this.loading = false;
       });
   }
@@ -152,7 +156,7 @@ export class PayslipBrowserService {
       .subscribe((_) => {
         this.actionLoading = false;
         this.snackBar.open('Payslips generated successfully');
-        this.onViewClicked();
+        this.onViewClicked(true);
       });
   }
 
