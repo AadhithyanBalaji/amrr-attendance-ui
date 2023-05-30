@@ -21,7 +21,9 @@
                         <app-amrr-select-with-search [title]="'Company'" [ctrl]="browserService.form.controls.company"
                             [options]="browserService.companies"></app-amrr-select-with-search>
                         <app-amrr-select-with-search [title]="'Unit'" [ctrl]="browserService.form.controls.unit"
-                            [options]="browserService.units"></app-amrr-select-with-search>
+                            [options]="browserService.filteredUnits"></app-amrr-select-with-search>
+                        <app-amrr-select-with-search [title]="'Employee'" [ctrl]="browserService.form.controls.employee"
+                            [options]="browserService.employees"></app-amrr-select-with-search>
                     </div>
                     <div class="action-container">
                         <button mat-flat-button color="primary" (click)="browserService.onViewClicked()">View</button>

@@ -23,6 +23,8 @@
                     [options]="companies"></app-amrr-select-with-search>
                 <app-amrr-select-with-search [title]="'Unit'" [ctrl]="form.controls.unit"
                     [options]="filteredUnits"></app-amrr-select-with-search>
+                <app-amrr-select-with-search [title]="'Employee'" [ctrl]="form.controls.employee"
+                    [options]="employees"></app-amrr-select-with-search>
             </div>
             <div class="action-container">
                 <button mat-flat-button color="primary" (click)="onView()">View</button>

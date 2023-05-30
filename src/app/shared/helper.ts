@@ -38,4 +38,17 @@ export default class Helper {
     });
     return [...mapObj.values()];
   }
+
+  public static addAllOption(options: any[]) {
+    if (
+      options.length > 0 &&
+      Helper.isNullOrUndefined(options.find((x) => x.id === 0))
+    ) {
+      options.unshift({
+        id: 0,
+        name: 'All',
+      });
+    }
+    return options;
+  }
 }

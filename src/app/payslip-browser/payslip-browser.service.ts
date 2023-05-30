@@ -16,6 +16,8 @@ import { AmrrCompany } from '../control-panel/company-browser/amrr-company.model
 import { AmrrUnit } from '../control-panel/unit-browser/amrr-unit.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PdfService } from './pdf.service';
+import { AmrrEmployee } from '../control-panel/employee-browser/amrr-employee.model';
+import { IAmrrTypeahead } from '../shared/amrr-typeahead.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -91,14 +93,16 @@ export class PayslipBrowserService {
   companies: AmrrCompany[] = [];
   filteredUnits: AmrrUnit[] = [];
   units: AmrrUnit[] = [];
+  employees: AmrrEmployee[] = [];
 
   form = new FormGroup({
     month: new FormControl(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       [Validators.required]
     ),
-    company: new FormControl(null, [Validators.required]),
-    unit: new FormControl(null),
+    company: new FormControl({}, [Validators.required]),
+    unit: new FormControl(),
+    employee: new FormControl(),
   });
   constructor(
     private readonly apiBusinessService: ApiBusinessService,
@@ -113,15 +117,20 @@ export class PayslipBrowserService {
       .get(`unit/${this.authService.getUserId()}`)
       .pipe(take(1))
       .subscribe((data: any) => {
-        this.filteredUnits = this.units = data.recordset as AmrrUnit[];
+        this.units = data.recordset as AmrrUnit[];
+
         const companyNames = this.units.map((u) => {
           return { id: u.companyId, name: u.companyName };
         });
-        this.companies = Helper.getUnique(companyNames);
-        this.form.controls.company.valueChanges.subscribe((company: any) => {
-          this.filteredUnits = this.units.filter(
-            (u) => u.companyId === company.id
-          );
+        this.companies = Helper.addAllOption(Helper.getUnique(companyNames));
+
+        this.setupFormListeners();
+        this.form.controls.company.setValue({ id: 0, name: 'All' });
+        this.getBrowserData({
+          month: Helper.getAttendanceDate(
+            new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+            this.datePipe
+          ),
         });
       });
   }
@@ -132,22 +141,12 @@ export class PayslipBrowserService {
     this.form.controls.month.setValue(event.toDate());
   }
 
-  onViewClicked(printPayslips = false) {
+  onViewClicked() {
     const filterData = this.getFilterData();
     if (Helper.isNullOrUndefined(filterData)) {
       return;
     }
-    this.loading = true;
-    this.apiBusinessService
-      .post('payslip/filter', filterData)
-      .pipe(take(1))
-      .subscribe((results: any) => {
-        this.dataSource = new MatTableDataSource(results.recordset);
-        if (printPayslips) {
-          this.pdfService.generatePayslips(filterData, results.recordset);
-        }
-        this.loading = false;
-      });
+    this.getBrowserData(filterData);
   }
 
   generatePayslips() {
@@ -166,12 +165,46 @@ export class PayslipBrowserService {
       .subscribe((_) => {
         this.actionLoading = false;
         this.snackBar.open('Payslips generated successfully');
-        this.onViewClicked(true);
+        this.onViewClicked();
       });
   }
 
   generateESIReport() {}
   displayBonusModal() {}
+
+  private getBrowserData(filterData: any) {
+    this.loading = true;
+    this.apiBusinessService
+      .post('payslip/filter', filterData)
+      .pipe(take(1))
+      .subscribe((results: any) => {
+        this.dataSource = new MatTableDataSource(results.recordset);
+        this.loading = false;
+      });
+  }
+
+  private setupFormListeners() {
+    this.form.controls.company.valueChanges.subscribe((company: any) => {
+      const filteredUnits =
+        company.id === 0
+          ? this.units
+          : this.units.filter((u) => u.companyId === company.id);
+
+      this.filteredUnits = Helper.addAllOption(filteredUnits);
+      this.form.controls.unit.setValue({ id: 0, name: 'All' });
+    });
+
+    this.form.controls.unit.valueChanges.subscribe((unit: any) => {
+      this.apiBusinessService
+        .get(`employee/${unit.id}`)
+        .pipe(take(1))
+        .subscribe((employees: any) => {
+          const dataSet = employees.recordset satisfies AmrrEmployee[];
+          this.employees = Helper.addAllOption(dataSet);
+          this.form.controls.employee.setValue({ id: 0, name: 'All' });
+        });
+    });
+  }
 
   private getFilterData() {
     const value = this.form.value;
@@ -179,8 +212,9 @@ export class PayslipBrowserService {
     return this.form.valid
       ? {
           month: Helper.getAttendanceDate(value.month, this.datePipe),
-          companyId: (value.company as any)?.id,
-          unitId: (value.unit as any)?.id,
+          companyId: (value.company as IAmrrTypeahead)?.id,
+          unitId: (value.unit as IAmrrTypeahead)?.id,
+          employeeId: (value.employee as IAmrrTypeahead)?.id,
         }
       : null;
   }
