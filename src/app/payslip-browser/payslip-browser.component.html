@@ -27,12 +27,17 @@
                     </div>
                     <div class="action-container">
                         <button mat-flat-button color="primary" (click)="browserService.onViewClicked()">View</button>
-                        <button mat-flat-button color="primary" (click)="browserService.displayBonusModal()">Add
+                        <button mat-flat-button color="primary" [disabled]="browserService.dataSource.data.length <= 0"
+                            (click)="browserService.displayBonusModal()">Add
                             Bonus</button>
-                        <button mat-flat-button color="primary" (click)="browserService.generateESIReport()">Generate
+                        <button mat-flat-button color="primary" [disabled]="browserService.dataSource.data.length <= 0"
+                            (click)="browserService.generateESIReport()">Generate
                             ESI</button>
-                        <button mat-flat-button color="primary" (click)="browserService.generatePayslips()">Generate
+                        <button mat-flat-button color="primary" [disabled]="browserService.dataSource.data.length <= 0"
+                            (click)="browserService.generatePayslips()">Generate
                             Payslips</button>
+                        <button mat-flat-button color="primary" [disabled]="browserService.dataSource.data.length <= 0"
+                            (click)="browserService.printPayslips()">Print Payslips</button>
                         <mat-spinner *ngIf="browserService.actionLoading" [diameter]="30"></mat-spinner>
                     </div>
                 </div>

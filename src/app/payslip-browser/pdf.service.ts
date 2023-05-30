@@ -30,12 +30,33 @@ export class PdfService {
   constructor(private readonly snackBar: MatSnackBar) {}
 
   generatePayslips(filterData: any, payslips: PayslipBrowser[]) {
+    if (
+      Helper.isNullOrUndefined(filterData) ||
+      Helper.isNullOrUndefined(filterData.month)
+    ) {
+      this.snackBar.open('Month is not selected');
+      return;
+    }
     if (payslips.length <= 0) {
       this.snackBar.open('No payslips to be printed');
       return;
     }
-    const payslip = payslips[0];
     const paySlipDate: Date = new Date(filterData.month);
+    let payslipContent: any[] = [];
+    for (let i = 0; i < payslips.length; i++) {
+      const payslip = payslips[i];
+      payslipContent = [
+        ...payslipContent,
+        { text: 'Employer Copy', alignment: 'center' },
+        this.generatePayslipDocDef(payslip),
+        { text: 'Employee Copy', alignment: 'center' },
+        this.generatePayslipDocDef(payslip),
+        i == payslips.length - 1
+          ? { text: '' }
+          : { text: '', pageBreak: 'after' },
+      ];
+    }
+
     const docDef = {
       info: {
         title: `Payslips - ${
@@ -45,12 +66,7 @@ export class PdfService {
         subject: 'Payslips',
         keywords: 'amrr payslips',
       },
-      content: [
-        { text: 'Employer Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip),
-        { text: 'Employee Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip),
-      ],
+      content: payslipContent,
       styles: this.getPdfStyles(),
       defaultStyle: {
         columnGap: 20,

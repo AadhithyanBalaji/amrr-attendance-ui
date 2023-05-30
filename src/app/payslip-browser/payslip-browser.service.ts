@@ -169,6 +169,13 @@ export class PayslipBrowserService {
       });
   }
 
+  printPayslips() {
+    this.pdfService.generatePayslips(
+      this.getFilterData(),
+      this.dataSource.data
+    );
+  }
+
   generateESIReport() {}
   displayBonusModal() {}
 
