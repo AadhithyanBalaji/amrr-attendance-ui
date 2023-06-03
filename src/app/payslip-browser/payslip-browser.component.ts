@@ -11,6 +11,7 @@ import {
   MAT_DATE_FORMATS,
 } from '@angular/material/core';
 import { PdfService } from './pdf.service';
+import { PayslipService } from './payslip.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -30,6 +31,7 @@ export const MY_FORMATS = {
   styleUrls: ['./payslip-browser.component.css'],
   providers: [
     PayslipBrowserService,
+    PayslipService,
     PdfService,
     {
       provide: DateAdapter,

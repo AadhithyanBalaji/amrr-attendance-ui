@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AmrrModalComponent } from 'src/app/shared/amrr-modal/amrr-modal.component';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
+import { PayslipService } from 'src/app/payslip-browser/payslip.service';
 
 @Injectable()
 export class AttendanceRegisterEditorFormService {
@@ -39,7 +40,8 @@ export class AttendanceRegisterEditorFormService {
     private readonly snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly payslipService: PayslipService
   ) {}
 
   init() {
@@ -89,6 +91,15 @@ export class AttendanceRegisterEditorFormService {
       .subscribe((_) => {
         this.snackBar.open('Updated Attendance Register');
         this.areEntriesDirty = false;
+        const attendanceDateForm = new Date(
+          this.form.controls.attendanceDate.value
+        );
+        const lastBusinessDay = this.getLastBusinessDay(
+          new Date(this.form.controls.attendanceDate.value)
+        );
+        if (attendanceDateForm.getDate() === lastBusinessDay.getDate()) {
+          this.requestPayslipGeneration();
+        }
       });
   }
 
@@ -207,5 +218,31 @@ export class AttendanceRegisterEditorFormService {
         this.queriedDate = date;
         this.areEntriesDirty = false;
       });
+  }
+
+  private requestPayslipGeneration() {
+    const companyId =
+      this.units.find((u) => u.id === this.form.controls.unitId.value?.id)
+        ?.companyId ?? 0;
+    const payCycleDate = Helper.getAttendanceDate(
+      this.form.controls.attendanceDate.value,
+      this.datePipe
+    );
+    this.payslipService.generatePayslips(payCycleDate, companyId);
+  }
+
+  private getLastBusinessDay(date: Date) {
+    while (!this.isBusinessDay(date)) {
+      date.setDate(date.getDate() - 1);
+    }
+    return date;
+  }
+
+  private isBusinessDay(date: Date) {
+    var day = date.getDay();
+    if (day == 0) {
+      return false;
+    }
+    return true;
   }
 }

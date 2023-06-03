@@ -19,6 +19,7 @@ import { PdfService } from './pdf.service';
 import { AmrrEmployee } from '../control-panel/employee-browser/amrr-employee.model';
 import { IAmrrTypeahead } from '../shared/amrr-typeahead.interface';
 import { Router } from '@angular/router';
+import { PayslipService } from './payslip.service';
 
 @Injectable({
   providedIn: 'root',
@@ -111,7 +112,8 @@ export class PayslipBrowserService {
     private readonly authService: AuthService,
     private readonly snackBar: MatSnackBar,
     private readonly pdfService: PdfService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly payslipService: PayslipService
   ) {}
 
   init() {
@@ -166,18 +168,19 @@ export class PayslipBrowserService {
       return;
     }
     this.actionLoading = true;
-    this.apiBusinessService
-      .post('payslip/generate', {
-        generatedOn: Helper.getAttendanceDate(new Date(), this.datePipe),
-        companyId: filterData!.companyId,
-        userId: this.authService.getUserId(),
-      })
+    this.payslipService
+      .generatePayslips(
+        Helper.getAttendanceDate(this.form.controls.month.value, this.datePipe),
+        filterData!.companyId
+      )
       .pipe(take(1))
-      .subscribe((_) => {
-        this.actionLoading = false;
-        this.snackBar.open('Payslips generated successfully');
-        this.onViewClicked();
-      });
+      .subscribe(
+        (_) => {
+          this.actionLoading = false;
+          this.onViewClicked();
+        },
+        (error) => (this.actionLoading = false)
+      );
   }
 
   printPayslips() {
