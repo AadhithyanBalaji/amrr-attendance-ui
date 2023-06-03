@@ -24,6 +24,7 @@ import { HolidayBrowserComponent } from './control-panel/holiday-browser/holiday
 import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
+import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-browser.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.compo
     AmrrChangePasswordComponent,
     PageNotFoundComponent,
     PayslipBrowserComponent,
+    BonusBrowserComponent
   ],
   imports: [
     BrowserModule,

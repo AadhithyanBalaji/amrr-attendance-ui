@@ -15,6 +15,7 @@ import { AdminGuard } from './auth/admin.guard';
 import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-change-password.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
+import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-browser.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -57,6 +58,11 @@ const routes: Routes = [
       {
         path: 'holiday',
         component: HolidayBrowserComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: 'bonus',
+        component: BonusBrowserComponent,
         canActivate: [AdminGuard],
       },
       {

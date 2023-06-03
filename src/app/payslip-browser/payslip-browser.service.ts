@@ -18,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PdfService } from './pdf.service';
 import { AmrrEmployee } from '../control-panel/employee-browser/amrr-employee.model';
 import { IAmrrTypeahead } from '../shared/amrr-typeahead.interface';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -109,7 +110,8 @@ export class PayslipBrowserService {
     private readonly datePipe: DatePipe,
     private readonly authService: AuthService,
     private readonly snackBar: MatSnackBar,
-    private readonly pdfService: PdfService
+    private readonly pdfService: PdfService,
+    private readonly router: Router
   ) {}
 
   init() {
@@ -154,6 +156,15 @@ export class PayslipBrowserService {
     if (Helper.isNullOrUndefined(filterData)) {
       return;
     }
+    if (
+      Helper.isNullOrUndefined(filterData?.companyId) ||
+      filterData?.companyId === 0
+    ) {
+      this.snackBar.open(
+        'Payslips can only be generated company wise. Please select a company'
+      );
+      return;
+    }
     this.actionLoading = true;
     this.apiBusinessService
       .post('payslip/generate', {
@@ -176,8 +187,9 @@ export class PayslipBrowserService {
     );
   }
 
-  generateESIReport() {}
-  displayBonusModal() {}
+  navigateToBonusBrowser() {
+    this.router.navigate(['bonus']);
+  }
 
   private getBrowserData(filterData: any) {
     this.loading = true;

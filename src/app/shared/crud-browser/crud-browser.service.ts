@@ -131,17 +131,29 @@ export class CrudBrowserService {
     this.apiBusinessService
       .get(this.entityEndpoint)
       .pipe(take(1))
-      .subscribe((data: any) => {
-        this.dataSource = new MatTableDataSource(data.recordset);
-        this.loading = false;
-      });
+      .subscribe(
+        (data: any) => {
+          this.dataSource = new MatTableDataSource(data.recordset);
+          this.loading = false;
+        },
+        (error) => {
+          this.snackBar.open(error?.error, '', { duration: 5000 });
+        }
+      );
   }
 
   private deleteEntity(id: number) {
     this.apiBusinessService
       .delete(this.entityEndpoint, id)
       .pipe(take(1))
-      .subscribe((_) => this.getData());
+      .subscribe(
+        (_) => this.getData(),
+        (error) => {
+          this.snackBar.open(this.getErrorMessage(error?.error), '', {
+            duration: 5000,
+          });
+        }
+      );
   }
 
   private buildEditorData(event: any) {
@@ -153,5 +165,11 @@ export class CrudBrowserService {
         form: this.form,
       },
     };
+  }
+
+  private getErrorMessage(error: string) {
+    if (error.includes('table "attendance.PaySlip", column \'BonusId\''))
+      return 'This bonus has already been assigned to a Payslip and hence cannot be deleted';
+    return error;
   }
 }
