@@ -12,20 +12,6 @@ export class PdfService {
   exporting = false;
   headerHeight = 15;
   normalHeight = 10;
-  months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
 
   constructor(private readonly snackBar: MatSnackBar) {}
 
@@ -59,9 +45,9 @@ export class PdfService {
 
     const docDef = {
       info: {
-        title: `Payslips - ${
-          this.months[paySlipDate.getMonth()]
-        } ${paySlipDate.getFullYear()}`,
+        title: `Payslips - ${Helper.getMonthName(
+          paySlipDate.getMonth()
+        )} ${paySlipDate.getFullYear()}`,
         author: 'AMRR',
         subject: 'Payslips',
         keywords: 'amrr payslips',

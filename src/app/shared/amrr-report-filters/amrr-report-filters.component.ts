@@ -27,8 +27,10 @@ export class AmrrReportFiltersComponent implements OnInit {
   employees: AmrrEmployee[] = [];
 
   form = new FormGroup({
-    fromDate: new FormControl(new Date()),
-    toDate: new FormControl(new Date()),
+    month: new FormControl(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      [Validators.required]
+    ),
     company: new FormControl({}, [Validators.required]),
     employee: new FormControl(),
     unit: new FormControl(),
@@ -59,6 +61,12 @@ export class AmrrReportFiltersComponent implements OnInit {
           toDate: Helper.getAttendanceDate(new Date(), this.datePipe),
         });
       });
+  }
+
+  monthSelected(event: any, dp: any, input: any) {
+    dp.close();
+    input.value = event.toISOString().split('-').join('/').substr(0, 7);
+    this.form.controls.month.setValue(event.toDate());
   }
 
   onView() {
@@ -92,8 +100,7 @@ export class AmrrReportFiltersComponent implements OnInit {
   private getFilterData() {
     const value = this.form.value;
     return {
-      fromDate: Helper.getAttendanceDate(value.fromDate, this.datePipe),
-      toDate: Helper.getAttendanceDate(value.toDate, this.datePipe),
+      generatedOn: Helper.getAttendanceDate(value.month, this.datePipe),
       companyId: (value.company as any)?.id,
       unitId: (value.unit as any)?.id,
       employeeId: (value.employee as any)?.id,

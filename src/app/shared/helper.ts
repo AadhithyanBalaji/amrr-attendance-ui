@@ -51,4 +51,29 @@ export default class Helper {
     }
     return options;
   }
+
+  public static getNoOfDays(date: any) {
+    const generatedOn = new Date(date);
+    const year = generatedOn.getFullYear();
+    const month = generatedOn.getMonth();
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  public static getMonthName(month: number) {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    return months[month];
+  }
 }
