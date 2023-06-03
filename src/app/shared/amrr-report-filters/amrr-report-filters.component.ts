@@ -57,8 +57,13 @@ export class AmrrReportFiltersComponent implements OnInit {
         this.setupFormListeners();
         this.form.controls.company.setValue({ id: 0, name: 'All' });
         this.onViewClicked.emit({
-          fromDate: Helper.getAttendanceDate(new Date(), this.datePipe),
-          toDate: Helper.getAttendanceDate(new Date(), this.datePipe),
+          generatedOn: Helper.getAttendanceDate(
+            new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+            this.datePipe
+          ),
+          companyId: 0,
+          unitId: 0,
+          employeeId: 0,
         });
       });
   }

@@ -4,8 +4,8 @@
     <div class="grid-container">
         <app-amrr-report-filters (onViewClicked)="formService.onViewClicked($event)"></app-amrr-report-filters>
         <div class="export-btn-container">
-            <button [disabled]="formService.dataSource.data.length <= 0" mat-flat-button color="primary"
-                (click)="formService.exportAttendance()">Export</button>
+            <button [disabled]="formService.dataSource && formService.dataSource.data.length <= 0" mat-flat-button
+                color="primary" (click)="formService.exportAttendance()">Export</button>
         </div>
         <mat-divider></mat-divider>
         <app-ammr-grid [columns]="formService.columns" [dataSource]="formService.dataSource"
