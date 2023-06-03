@@ -7,6 +7,13 @@
             <button [disabled]="formService.dataSource && formService.dataSource.data.length <= 0" mat-flat-button
                 color="primary" (click)="formService.exportAttendance()">Export</button>
         </div>
+        <div class="charts-container" *ngIf="formService.multi && formService.multi.length > 0">
+            <ngx-charts-line-chart [scheme]="chartService.colorScheme" [legend]="chartService.legend"
+                [showXAxisLabel]="chartService.showXAxisLabel" [showYAxisLabel]="chartService.showYAxisLabel"
+                [xAxis]="chartService.xAxis" [yAxis]="chartService.yAxis" [xAxisLabel]="chartService.xAxisLabel"
+                [yAxisLabel]="chartService.yAxisLabel" [timeline]="chartService.timeline" [results]="formService.multi">
+            </ngx-charts-line-chart>
+        </div>
         <mat-divider></mat-divider>
         <app-ammr-grid [columns]="formService.columns" [dataSource]="formService.dataSource"
             [loading]="formService.loading" [readOnly]="true"></app-ammr-grid>

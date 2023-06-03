@@ -25,6 +25,7 @@ import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-ch
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
 import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-browser.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-brows
     AppRoutingModule,
     SharedModule,
     DragDropModule,
+    NgxChartsModule
   ],
   providers: [
     DatePipe,

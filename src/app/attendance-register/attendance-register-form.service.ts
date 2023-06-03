@@ -10,6 +10,7 @@ import { ExcelJSService } from './exceljs.service';
 
 @Injectable()
 export class AttendanceRegisterFormService {
+  multi: any;
   constructor(
     private readonly router: Router,
     private readonly apiBusinessService: ApiBusinessService,
@@ -78,6 +79,7 @@ export class AttendanceRegisterFormService {
         ) {
           this.loading = false;
           this.dataSource.data = [];
+          this.multi = [];
           return;
         }
         const noOfDays = Helper.getNoOfDays(filterData.generatedOn);
@@ -89,11 +91,39 @@ export class AttendanceRegisterFormService {
           });
         }
         this.dataSource = new MatTableDataSource(results.recordset);
+        this.buildChartData(noOfDays);
         this.loading = false;
       });
   }
 
   exportAttendance() {
     this.excelJsService.exportAttendance(this.dataSource.data, this.filterData);
+  }
+
+  private buildChartData(noOfDays: number) {
+    const multi: any = [];
+    for (let i = 0; i < this.dataSource.data.length - 1; i++) {
+      const series: any = [];
+      for (let j = 1; j <= noOfDays; j++) {
+        series.push({
+          name: j,
+          value: this.getAttendanceValue(this.dataSource.data[i][j]),
+        });
+      }
+      multi.push({
+        name: this.dataSource.data[i].EmployeeName,
+        series: series,
+      });
+    }
+    this.multi = multi;
+  }
+
+  private getAttendanceValue(dayValue: string): number {
+    let attendanceUnit = 0;
+    if (Helper.isNullOrUndefined(dayValue)) return 0;
+    else if (dayValue === 'X') return 1;
+    else if (dayValue === 'H') return 0.5;
+    else if (dayValue === 'L') return 0;
+    return attendanceUnit;
   }
 }
