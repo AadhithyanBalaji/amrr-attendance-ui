@@ -31,12 +31,32 @@
                             Bonus</button>
                         <button mat-flat-button color="primary" (click)="browserService.generatePayslips()">Generate
                             Payslips</button>
-                        <button mat-flat-button color="primary" [disabled]="browserService.dataSource.data.length <= 0"
+                        <button mat-flat-button color="primary"
+                            [disabled]="browserService.dataSource && browserService.dataSource.data.length <= 0"
                             (click)="browserService.printPayslips()">Print Payslips</button>
                         <mat-spinner *ngIf="browserService.actionLoading" [diameter]="30"></mat-spinner>
                     </div>
                 </div>
             </form>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="esi-metrics-container">
+            <mat-card class="example-card">
+                <mat-card-header>
+                    <mat-card-title>{{browserService.getESITotal()}}</mat-card-title>
+                </mat-card-header>
+                <div class="esi-title"> ESI <mat-icon aria-hidden="false" aria-label="Payslip"
+                        fontIcon="currency_rupee"></mat-icon>
+                </div>
+            </mat-card>
+            <mat-card class="example-card">
+                <mat-card-header>
+                    <mat-card-title>{{browserService.getPFTotal()}}</mat-card-title>
+                </mat-card-header>
+                <div class="esi-title"> PF <mat-icon aria-hidden="false" aria-label="Payslip"
+                        fontIcon="currency_rupee"></mat-icon>
+                </div>
+            </mat-card>
         </div>
         <mat-divider></mat-divider>
         <app-ammr-grid [columns]="browserService.columns" [dataSource]="browserService.dataSource"

@@ -191,6 +191,24 @@ export class PayslipBrowserService {
     this.router.navigate(['bonus']);
   }
 
+  getESITotal() {
+    return this.dataSource?.data
+      ? this.dataSource.data
+          .map((item) => item.esiComponent)
+          .reduce((prev, next) => prev + next, 0)
+          .toFixed(2)
+      : '0.00';
+  }
+
+  getPFTotal() {
+    return this.dataSource?.data
+      ? this.dataSource.data
+          .map((item) => item.pfComponent)
+          .reduce((prev, next) => prev + next, 0)
+          .toFixed(2)
+      : '0.00';
+  }
+
   private getBrowserData(filterData: any) {
     this.loading = true;
     this.apiBusinessService
