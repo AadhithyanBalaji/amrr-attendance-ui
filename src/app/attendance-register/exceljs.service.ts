@@ -76,7 +76,7 @@ export class ExcelJSService {
     const attendanceDate = new Date(filterData.generatedOn);
     const year = attendanceDate.getFullYear();
     const month = attendanceDate.getFullYear();
-    for (let i = 1; i <= data.length - 1; i++) {
+    for (let i = 0; i <= data.length - 1; i++) {
       const index = i + this.gridHeaderRowIndex;
       this.setGridCellAt(index, 1, i, 'center');
       this.setGridCellAt(index, 2, data[i].EmployeeName.toUpperCase(), 'left');
