@@ -173,7 +173,7 @@ export class PdfService {
             ],
             [
               {
-                text: 'ESI',
+                text: 'ESI (employee contribution)',
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -195,7 +195,7 @@ export class PdfService {
             ],
             [
               {
-                text: 'PF',
+                text: 'PF (employee contribution)',
                 style: 'tableHeader',
                 alignment: 'center',
               },
