@@ -35,8 +35,18 @@ export class PdfService {
         ...payslipContent,
         { text: 'Employer Copy', alignment: 'center' },
         this.generatePayslipDocDef(payslip),
+        {
+          text: '*ESI and PF deposits are made by employer on behalf of employee',
+          style: ['quote', 'small'],
+          alignment: 'right',
+        },
         { text: 'Employee Copy', alignment: 'center' },
         this.generatePayslipDocDef(payslip),
+        {
+          text: '*ESI and PF deposits are made by employer on behalf of employee',
+          style: ['quote', 'small'],
+          alignment: 'right',
+        },
         i == payslips.length - 1
           ? { text: '' }
           : { text: '', pageBreak: 'after' },
@@ -173,7 +183,7 @@ export class PdfService {
             ],
             [
               {
-                text: 'ESI (employer contribution)',
+                text: `ESI*`,
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -195,7 +205,7 @@ export class PdfService {
             ],
             [
               {
-                text: 'PF (employer contribution)',
+                text: `PF*`,
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -226,15 +236,6 @@ export class PdfService {
                 colSpan: 4,
                 text: `In words : \t ${this.inWords(payslip.totalPay)}`,
               },
-            ],
-            [
-              {
-                colSpan: 4,
-                text: '',
-              },
-              {},
-              {},
-              {},
             ],
             [
               {
@@ -376,6 +377,12 @@ export class PdfService {
         color: 'black',
         fillColor: '#cccccc',
         bold: true,
+      },
+      quote: {
+        italics: true,
+      },
+      small: {
+        fontSize: 8,
       },
     };
   }
