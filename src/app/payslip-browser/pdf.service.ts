@@ -28,20 +28,23 @@ export class PdfService {
       return;
     }
     const paySlipDate: Date = new Date(filterData.month);
+    const paySlipCycle = `${Helper.getMonthName(
+      paySlipDate.getMonth()
+    )} ${paySlipDate.getFullYear()}`;
     let payslipContent: any[] = [];
     for (let i = 0; i < payslips.length; i++) {
       const payslip = payslips[i];
       payslipContent = [
         ...payslipContent,
         { text: 'Employer Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip),
+        this.generatePayslipDocDef(payslip, paySlipCycle),
         {
           text: '*ESI and PF deposits are made by employer on behalf of employee',
           style: ['quote', 'small'],
           alignment: 'right',
         },
         { text: 'Employee Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip),
+        this.generatePayslipDocDef(payslip, paySlipCycle),
         {
           text: '*ESI and PF deposits are made by employer on behalf of employee',
           style: ['quote', 'small'],
@@ -55,9 +58,7 @@ export class PdfService {
 
     const docDef = {
       info: {
-        title: `Payslips - ${Helper.getMonthName(
-          paySlipDate.getMonth()
-        )} ${paySlipDate.getFullYear()}`,
+        title: `Payslips - ${paySlipCycle}`,
         author: 'AMRR',
         subject: 'Payslips',
         keywords: 'amrr payslips',
@@ -73,7 +74,7 @@ export class PdfService {
     this.printPdf(docDef);
   }
 
-  private generatePayslipDocDef(payslip: PayslipBrowser) {
+  private generatePayslipDocDef(payslip: PayslipBrowser, paySlipCycle: string) {
     return [
       {
         style: 'tableExample',
@@ -104,7 +105,7 @@ export class PdfService {
           body: [
             [
               {
-                text: 'Salary slip',
+                text: `Salary slip for ${paySlipCycle}`,
                 style: 'tableMainHeader',
                 colSpan: 4,
                 alignment: 'center',
@@ -166,7 +167,7 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: payslip.totalPay,
+                text: payslip.totalPay.toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -183,12 +184,12 @@ export class PdfService {
             ],
             [
               {
-                text: `ESI*`,
+                text: `Employee ESI*`,
                 style: 'tableHeader',
                 alignment: 'center',
               },
               {
-                text: payslip.esiComponent,
+                text: payslip.esiComponent.toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -205,17 +206,27 @@ export class PdfService {
             ],
             [
               {
-                text: `PF*`,
+                text: `Employee PF*`,
                 style: 'tableHeader',
                 alignment: 'center',
               },
               {
-                text: payslip.pfComponent,
+                text: payslip.pfComponent.toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
-              {},
-              {},
+              {
+                text: payslip.bonusComponent ? `Bonus` : '',
+                style: 'tableHeader',
+                alignment: 'center',
+              },
+              {
+                text: payslip.bonusComponent
+                  ? payslip.bonusComponent.toFixed(2)
+                  : '',
+                style: 'tableHeader',
+                alignment: 'center',
+              },
             ],
             [
               {
@@ -224,7 +235,9 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: payslip.totalPay,
+                text: (
+                  payslip.totalPay + (payslip.bonusComponent ?? 0)
+                ).toFixed(2),
                 style: 'tableMainHeader',
                 alignment: 'center',
               },
@@ -234,7 +247,9 @@ export class PdfService {
             [
               {
                 colSpan: 4,
-                text: `In words : \t ${this.inWords(payslip.totalPay)}`,
+                text: `In words : \t ${this.inWords(
+                  +(payslip.totalPay + (payslip.bonusComponent ?? 0)).toFixed(2)
+                )}`,
               },
             ],
             [
@@ -273,9 +288,9 @@ export class PdfService {
       this.buildKeyValueRow('Company Name', payslip.companyName),
       this.buildKeyValueRow(
         'Company Address',
-        `${payslip.companyAddressLine1} ${this.validateString(
+        `${payslip.companyAddressLine1} ${this.validateAddressString(
           payslip.companyAddressLine2
-        )} ${this.validateString(payslip.companyAddressLine3)}, ${
+        )} ${this.validateAddressString(payslip.companyAddressLine3)}, ${
           payslip.companyPostalCode
         }`
       ),
@@ -312,24 +327,26 @@ export class PdfService {
       this.buildKeyValueRow('Employee Name', payslip.employeeName),
       this.buildKeyValueRow(
         'Employee Address',
-        `${payslip.employeeAddressLine1} ${this.validateString(
+        `${payslip.employeeAddressLine1} ${this.validateAddressString(
           payslip.employeeAddressLine2
-        )} ${this.validateString(payslip.employeeAddressLine3)}, ${
+        )} ${this.validateAddressString(payslip.employeeAddressLine3)}, ${
           payslip.employeePostalCode
         }`
       ),
       [
         {
-          text: `Phone # :\n${payslip.employeePhoneNumber}`,
+          text: `Phone # :\n${this.validateString(
+            payslip.employeePhoneNumber
+          )}`,
         },
         {
-          text: `UAN # :\n${payslip.uanNo}`,
+          text: `UAN # :\n${this.validateString(payslip.uanNo)}`,
         },
         {
-          text: `ESI # :\n${payslip.esiNo}`,
+          text: `ESI # :\n${this.validateString(payslip.esiNo)}`,
         },
         {
-          text: `Aadhar # :\n${payslip.aadharNo}`,
+          text: `Aadhar # :\n${this.validateString(payslip.aadharNo)}`,
         },
       ],
     ];
@@ -350,8 +367,12 @@ export class PdfService {
     ];
   }
 
-  private validateString(str: string) {
+  private validateAddressString(str: string) {
     return Helper.isNullOrUndefined(str) || str === '' ? '' : ',' + str;
+  }
+
+  private validateString(str: string) {
+    return Helper.isNullOrUndefined(str) || str === '' ? '' : str;
   }
 
   private printPdf(docDef: any) {
@@ -380,6 +401,7 @@ export class PdfService {
       },
       quote: {
         italics: true,
+        bold: true,
       },
       small: {
         fontSize: 8,
