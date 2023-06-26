@@ -79,10 +79,14 @@ export class AttendanceRegisterEditorFormService {
 
     if (
       attendanceRecords.length === 0 ||
-      Helper.isNullOrUndefined(this.getAttendanceDate()) ||
-      this.filteredTotalEntries.length !== 0
+      Helper.isNullOrUndefined(this.getAttendanceDate())
     )
       return;
+
+    if (this.filteredTotalEntries.length !== 0) {
+      this.snackBar.open('Few employees are not yet marked');
+      return;
+    }
 
     this.apiBusinessService
       .post('attendance', {
