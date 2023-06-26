@@ -23,11 +23,12 @@ export class AttendanceRegisterEditorFormService {
   }>;
   units: Unit[] = [];
 
-  presentEntries: AttendanceRegisterEntry[] = [];
-  filteredPresentEntries: AttendanceRegisterEntry[] = [];
+  totalEntries: AttendanceRegisterEntry[] = [];
+  filteredTotalEntries: AttendanceRegisterEntry[] = [];
   absentEntries: AttendanceRegisterEntry[] = [];
+  presentEntries: AttendanceRegisterEntry[] = [];
   halfDayEntries: AttendanceRegisterEntry[] = [];
-  presentEntriesFilter = new FormControl();
+  totalEntriesFilter = new FormControl();
 
   saving = false;
   areEntriesDirty: boolean;
@@ -65,7 +66,7 @@ export class AttendanceRegisterEditorFormService {
 
   addAttendance() {
     const attendanceRecords: AttendanceRecord[] = [
-      ...this.filteredPresentEntries.map(
+      ...this.presentEntries.map(
         (x) => new AttendanceRecord(x.employeeId, true, 1)
       ),
       ...this.absentEntries.map(
@@ -78,7 +79,8 @@ export class AttendanceRegisterEditorFormService {
 
     if (
       attendanceRecords.length === 0 ||
-      Helper.isNullOrUndefined(this.getAttendanceDate())
+      Helper.isNullOrUndefined(this.getAttendanceDate()) ||
+      this.filteredTotalEntries.length !== 0
     )
       return;
 
@@ -141,12 +143,17 @@ export class AttendanceRegisterEditorFormService {
       );
     }
     const absentEntries = this.absentEntries;
+    const presentEntries = this.presentEntries;
     const halfDayEntries = this.halfDayEntries;
-    this.presentEntries = this.presentEntries.filter(function (el) {
-      return !absentEntries.includes(el) && !halfDayEntries.includes(el);
+    this.totalEntries = this.totalEntries.filter(function (el) {
+      return (
+        !presentEntries.includes(el) &&
+        !absentEntries.includes(el) &&
+        !halfDayEntries.includes(el)
+      );
     });
 
-    this.presentEntriesFilter.setValue('');
+    this.totalEntriesFilter.setValue('');
   }
 
   getAttendanceRegister() {
@@ -178,16 +185,16 @@ export class AttendanceRegisterEditorFormService {
   }
 
   private setupFormListeners() {
-    this.presentEntriesFilter.valueChanges
+    this.totalEntriesFilter.valueChanges
       .pipe(debounceTime(300))
       .subscribe(
         (name: string) =>
-          (this.filteredPresentEntries =
+          (this.filteredTotalEntries =
             Helper.isTruthy(name) && name.length > 0
-              ? this.presentEntries.filter((e) =>
+              ? this.totalEntries.filter((e) =>
                   e.employeeName.toLowerCase().includes(name.toLowerCase())
                 )
-              : this.presentEntries)
+              : this.totalEntries)
       );
   }
 
@@ -203,17 +210,20 @@ export class AttendanceRegisterEditorFormService {
       .subscribe((data: any) => {
         const entries = data.recordset satisfies AttendanceRegisterEntry[];
         this.entries = entries;
-        this.filteredPresentEntries = this.presentEntries = entries.filter(
+        this.filteredTotalEntries = this.totalEntries = entries.filter(
+          (e: AttendanceRegisterEntry) => Helper.isNullOrUndefined(e.isPresent)
+        );
+        this.presentEntries = entries.filter(
           (e: AttendanceRegisterEntry) =>
-            (e.isPresent || e.isPresent === null) &&
-            (e.attendanceUnit === null || e.attendanceUnit > 0.5)
+            Helper.isTruthy(e.isPresent) && e.attendanceUnit > 0.5
         );
         this.absentEntries = entries.filter(
-          (e: AttendanceRegisterEntry) => e.isPresent !== null && !e.isPresent
+          (e: AttendanceRegisterEntry) =>
+            Helper.isTruthy(e.isPresent) && e.isPresent
         );
         this.halfDayEntries = entries.filter(
           (e: AttendanceRegisterEntry) =>
-            e.isPresent && e.attendanceUnit === 0.5
+            Helper.isTruthy(e.isPresent) && e.attendanceUnit === 0.5
         );
         this.queriedDate = date;
         this.areEntriesDirty = false;

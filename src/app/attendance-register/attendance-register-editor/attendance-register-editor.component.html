@@ -21,26 +21,36 @@
         <span style="padding-bottom: 15px"> Attendance Date: {{formService.queriedDate | date}}</span>
         <div>
             <mat-form-field class="example-full-width">
-                <input matInput placeholder="Username" [formControl]="formService.presentEntriesFilter">
+                <input matInput placeholder="Username" [formControl]="formService.totalEntriesFilter">
                 <mat-icon color="primary" matSuffix>search</mat-icon>
             </mat-form-field>
         </div>
     </div>
     <div class="entries-container">
         <div class="example-container">
-            <h2>Present ({{formService.filteredPresentEntries.length}})</h2>
-            <div cdkDropList #presentList="cdkDropList" [cdkDropListData]="formService.filteredPresentEntries"
-                [cdkDropListConnectedTo]="[absentList, halfDayList]" class="example-list"
+            <h2>Total ({{formService.filteredTotalEntries.length}})</h2>
+            <div cdkDropList #totalList="cdkDropList" [cdkDropListData]="formService.filteredTotalEntries"
+                [cdkDropListConnectedTo]="[presentList, absentList, halfDayList]" class="example-list"
                 (cdkDropListDropped)="formService.drop($event)">
-                <div class="example-box" *ngFor="let item of formService.filteredPresentEntries" cdkDrag>
+                <div class="example-box" *ngFor="let item of formService.filteredTotalEntries" cdkDrag>
                     {{item.employeeName}}</div>
+            </div>
+        </div>
+
+        <div class="example-container">
+            <h2>Present ({{formService.presentEntries.length}})</h2>
+            <div cdkDropList #presentList="cdkDropList" [cdkDropListData]="formService.presentEntries"
+                [cdkDropListConnectedTo]="[totalList, presentList, halfDayList]" class="example-list"
+                (cdkDropListDropped)="formService.drop($event)">
+                <div class="example-box" *ngFor="let item of formService.presentEntries" cdkDrag>{{item.employeeName}}
+                </div>
             </div>
         </div>
 
         <div class="example-container">
             <h2>Absent ({{formService.absentEntries.length}})</h2>
             <div cdkDropList #absentList="cdkDropList" [cdkDropListData]="formService.absentEntries"
-                [cdkDropListConnectedTo]="[presentList, halfDayList]" class="example-list"
+                [cdkDropListConnectedTo]="[totalList, presentList, halfDayList]" class="example-list"
                 (cdkDropListDropped)="formService.drop($event)">
                 <div class="example-box" *ngFor="let item of formService.absentEntries" cdkDrag>{{item.employeeName}}
                 </div>
@@ -50,7 +60,7 @@
         <div class="example-container">
             <h2>Half Day ({{formService.halfDayEntries.length}})</h2>
             <div cdkDropList #halfDayList="cdkDropList" [cdkDropListData]="formService.halfDayEntries"
-                [cdkDropListConnectedTo]="[presentList, absentList]" class="example-list"
+                [cdkDropListConnectedTo]="[totalList, presentList, absentList]" class="example-list"
                 (cdkDropListDropped)="formService.drop($event)">
                 <div class="example-box" *ngFor="let item of formService.halfDayEntries" cdkDrag>{{item.employeeName}}
                 </div>
