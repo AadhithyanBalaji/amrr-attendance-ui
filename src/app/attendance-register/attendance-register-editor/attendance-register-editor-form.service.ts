@@ -1,19 +1,24 @@
 import { DatePipe } from '@angular/common';
-import { Injectable } from '@angular/core';
+import { Injectable, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { debounceTime, pairwise, startWith, take } from 'rxjs';
+import { take } from 'rxjs';
 import { Unit } from 'src/app/models/unit.model';
 import { ApiBusinessService } from 'src/app/shared/api-business.service';
 import { AttendanceRegisterEntry } from './attendance-register-entry.model';
-import { AttendanceRecord } from './attendance-record.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import Helper from 'src/app/shared/helper';
-import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
-import { AmrrModalComponent } from 'src/app/shared/amrr-modal/amrr-modal.component';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { PayslipService } from 'src/app/payslip-browser/payslip.service';
+import {
+  GridColumnType,
+  IAmmrGridColumn,
+} from 'src/app/shared/ammr-grid/ammr-grid-column.interface';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { AttendanceEditorBrowser } from './attendance-editor-browser.model';
+import { AttendanceStatusEnum } from './attendance-status.enum';
 
 @Injectable()
 export class AttendanceRegisterEditorFormService {
@@ -23,29 +28,22 @@ export class AttendanceRegisterEditorFormService {
   }>;
   units: Unit[] = [];
 
-  totalEntries: AttendanceRegisterEntry[] = [];
-  filteredTotalEntries: AttendanceRegisterEntry[] = [];
-  absentEntries: AttendanceRegisterEntry[] = [];
-  presentEntries: AttendanceRegisterEntry[] = [];
-  halfDayEntries: AttendanceRegisterEntry[] = [];
-  totalEntriesFilter = new FormControl();
-
-  saving = false;
-  areEntriesDirty: boolean;
-  entries: AttendanceRegisterEntry[] = [];
   queriedDate: string;
+  columns: IAmmrGridColumn[] = [];
+  dataSource: MatTableDataSource<AttendanceEditorBrowser, MatPaginator>;
+  loading = false;
+  saving = false;
 
   constructor(
     private readonly apiBusinessService: ApiBusinessService,
     private readonly datePipe: DatePipe,
     private readonly snackBar: MatSnackBar,
-    private readonly dialog: MatDialog,
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly payslipService: PayslipService
   ) {}
 
-  init() {
+  init(statusTemplate: TemplateRef<any>) {
     const userId = this.authService.getUserId();
     if (Helper.isTruthy(userId)) {
       this.apiBusinessService
@@ -59,35 +57,25 @@ export class AttendanceRegisterEditorFormService {
               Validators.required,
             ]),
           });
-          this.setupFormListeners();
         });
     }
+    this.columns = this.setupColumns(statusTemplate);
   }
 
   addAttendance() {
-    const attendanceRecords: AttendanceRecord[] = [
-      ...this.presentEntries.map(
-        (x) => new AttendanceRecord(x.employeeId, true, 1)
-      ),
-      ...this.absentEntries.map(
-        (x) => new AttendanceRecord(x.employeeId, false, 0)
-      ),
-      ...this.halfDayEntries.map(
-        (x) => new AttendanceRecord(x.employeeId, true, 0.5)
-      ),
-    ];
+    if (Helper.isNullOrUndefined(this.getAttendanceDate())) return;
 
-    if (
-      attendanceRecords.length === 0 ||
-      Helper.isNullOrUndefined(this.getAttendanceDate())
-    )
-      return;
+    const attendanceRecords = this.dataSource.data
+      .filter((x) => Helper.isTruthy(x.status))
+      .map((x) => ({
+        employeeId: x.id,
+        isPresent:
+          x.status === AttendanceStatusEnum.Present.toString() ||
+          x.status === AttendanceStatusEnum.HalfDay.toString(),
+        attendanceUnit: this.getAttendanceUnit(x.status),
+      }));
 
-    if (this.filteredTotalEntries.length !== 0) {
-      this.snackBar.open('Few employees are not yet marked');
-      return;
-    }
-
+    this.saving = true;
     this.apiBusinessService
       .post('attendance', {
         attendanceRecords: attendanceRecords,
@@ -96,7 +84,6 @@ export class AttendanceRegisterEditorFormService {
       .pipe(take(1))
       .subscribe((_) => {
         this.snackBar.open('Updated Attendance Register');
-        this.areEntriesDirty = false;
         const attendanceDateForm = new Date(
           this.form.controls.attendanceDate.value
         );
@@ -106,78 +93,33 @@ export class AttendanceRegisterEditorFormService {
         if (attendanceDateForm.getDate() === lastBusinessDay.getDate()) {
           this.requestPayslipGeneration();
         }
+        this.saving = false;
       });
   }
 
   addAttendanceAndClose() {}
 
   cancel() {
-    if (this.areEntriesDirty) {
-      this.dialog
-        .open(AmrrModalComponent, {
-          data: {
-            title: 'Unsaved Changes',
-            body: `You will lose changes to attendance entries for the date ${this.getAttendanceDate()}. Are you sure to exit?`,
-          },
-        })
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((result) =>
-          result ? this.router.navigate(['register']) : null
-        );
-    } else {
-      this.router.navigate(['register']);
-    }
-  }
-
-  drop(event: any) {
-    this.areEntriesDirty = true;
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-    const absentEntries = this.absentEntries;
-    const presentEntries = this.presentEntries;
-    const halfDayEntries = this.halfDayEntries;
-    this.totalEntries = this.totalEntries.filter(function (el) {
-      return (
-        !presentEntries.includes(el) &&
-        !absentEntries.includes(el) &&
-        !halfDayEntries.includes(el)
-      );
-    });
-
-    this.totalEntriesFilter.setValue('');
+    this.router.navigate(['register']);
   }
 
   getAttendanceRegister() {
-    if (this.areEntriesDirty) {
-      this.dialog
-        .open(AmrrModalComponent, {
-          data: {
-            title: 'Unsaved Changes',
-            body: `You will lose changes to attendance entries for the date ${this.getAttendanceDate()}. Are you sure to change selection?`,
-          },
-        })
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((result) => (result ? this.updateAttendanceEditor() : null));
-    } else {
-      this.updateAttendanceEditor();
-    }
+    this.getAttendanceGridData();
   }
 
-  getAttendanceDate() {
+  getUnMarkedCount() {
+    return this.dataSource.data.filter((x) =>
+      Helper.isNullOrUndefined(x.status)
+    ).length;
+  }
+
+  getEmployeeCount(status: AttendanceStatusEnum) {
+    return this.dataSource.data.filter(
+      (x) => Helper.isTruthy(x.status) && x.status === status.toString()
+    ).length;
+  }
+
+  private getAttendanceDate() {
     return (
       this.datePipe.transform(
         new Date(
@@ -188,49 +130,27 @@ export class AttendanceRegisterEditorFormService {
     );
   }
 
-  private setupFormListeners() {
-    this.totalEntriesFilter.valueChanges
-      .pipe(debounceTime(300))
-      .subscribe(
-        (name: string) =>
-          (this.filteredTotalEntries =
-            Helper.isTruthy(name) && name.length > 0
-              ? this.totalEntries.filter((e) =>
-                  e.employeeName.toLowerCase().includes(name.toLowerCase())
-                )
-              : this.totalEntries)
-      );
-  }
-
-  private updateAttendanceEditor() {
+  private getAttendanceGridData() {
     if (!this.form.valid && !this.form.dirty) return;
     const date = this.getAttendanceDate();
     const unitId = this.form.controls.unitId.value?.id;
     if (Helper.isNullOrUndefined(date) || Helper.isNullOrUndefined(unitId))
       return;
+    this.loading = true;
     this.apiBusinessService
       .get(`attendance/editor/${date}/${unitId}`)
       .pipe(take(1))
       .subscribe((data: any) => {
-        const entries = data.recordset satisfies AttendanceRegisterEntry[];
-        this.entries = entries;
-        this.filteredTotalEntries = this.totalEntries = entries.filter(
-          (e: AttendanceRegisterEntry) => Helper.isNullOrUndefined(e.isPresent)
-        );
-        this.presentEntries = entries.filter(
-          (e: AttendanceRegisterEntry) =>
-            Helper.isTruthy(e.isPresent) && e.attendanceUnit > 0.5
-        );
-        this.absentEntries = entries.filter(
-          (e: AttendanceRegisterEntry) =>
-            Helper.isTruthy(e.isPresent) && e.isPresent
-        );
-        this.halfDayEntries = entries.filter(
-          (e: AttendanceRegisterEntry) =>
-            Helper.isTruthy(e.isPresent) && e.attendanceUnit === 0.5
-        );
+        const entries: AttendanceRegisterEntry[] =
+          data.recordset satisfies AttendanceRegisterEntry[];
+        const convData = entries.map((x) => ({
+          id: x.employeeId,
+          name: x.employeeName,
+          status: this.getStatusEnum(x.isPresent, x.attendanceUnit),
+        }));
+        this.dataSource = new MatTableDataSource(convData);
         this.queriedDate = date;
-        this.areEntriesDirty = false;
+        this.loading = false;
       });
   }
 
@@ -258,5 +178,46 @@ export class AttendanceRegisterEditorFormService {
       return false;
     }
     return true;
+  }
+
+  private setupColumns(statusTemplate: TemplateRef<any>) {
+    return [
+      {
+        key: 'sno',
+        name: 'S.No.',
+        type: GridColumnType.Sno,
+      },
+      {
+        key: Helper.nameof<AttendanceEditorBrowser>('name'),
+        name: 'Employee',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AttendanceEditorBrowser>('status'),
+        name: 'Status',
+        template: statusTemplate,
+        type: GridColumnType.Template,
+      },
+    ];
+  }
+
+  private getAttendanceUnit(status: string | null) {
+    switch (status) {
+      case AttendanceStatusEnum.Present.toString():
+        return 1;
+      case AttendanceStatusEnum.HalfDay.toString():
+        return 0.5;
+    }
+    return 0;
+  }
+
+  private getStatusEnum(isPresent: boolean, attendanceUnit: number) {
+    if (isPresent && attendanceUnit > 0.5)
+      return AttendanceStatusEnum.Present.toString();
+    if (isPresent && attendanceUnit === 0.5)
+      return AttendanceStatusEnum.HalfDay.toString();
+    if (Helper.isTruthy(isPresent) && !isPresent)
+      return AttendanceStatusEnum.Absent.toString();
+    return null;
   }
 }

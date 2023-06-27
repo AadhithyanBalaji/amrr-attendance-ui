@@ -61,6 +61,8 @@ import {
 import { CrudBrowserComponent } from './crud-browser/crud-browser.component';
 import { CrudEditorComponent } from './crud-browser/crud-editor.component';
 import { AmrrReportFiltersComponent } from './amrr-report-filters/amrr-report-filters.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -73,9 +75,9 @@ import { AmrrReportFiltersComponent } from './amrr-report-filters/amrr-report-fi
     AmrrActionRowComponent,
     CrudBrowserComponent,
     CrudEditorComponent,
-    AmrrReportFiltersComponent
+    AmrrReportFiltersComponent,
   ],
-  providers:[
+  providers: [
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline' },
@@ -149,6 +151,8 @@ import { AmrrReportFiltersComponent } from './amrr-report-filters/amrr-report-fi
     ScrollingModule,
     DialogModule,
     NgxMatSelectSearchModule,
+    MatRadioModule,
+    MatBadgeModule
   ],
   exports: [
     A11yModule,
@@ -194,7 +198,9 @@ import { AmrrReportFiltersComponent } from './amrr-report-filters/amrr-report-fi
     AmrrActionRowComponent,
     CrudBrowserComponent,
     CrudEditorComponent,
-    AmrrReportFiltersComponent
+    AmrrReportFiltersComponent,
+    MatRadioModule,
+    MatBadgeModule
   ],
 })
 export class SharedModule {}

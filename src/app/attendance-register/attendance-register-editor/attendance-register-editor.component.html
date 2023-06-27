@@ -16,57 +16,23 @@
         <button mat-flat-button color="primary" (click)="formService.getAttendanceRegister()">View</button>
     </form>
 </div>
-<div *ngIf="formService.entries.length > 0; else noRegisterFound">
-    <div class="filter-container">
-        <span style="padding-bottom: 15px"> Attendance Date: {{formService.queriedDate | date}}</span>
-        <div>
-            <mat-form-field class="example-full-width">
-                <input matInput placeholder="Username" [formControl]="formService.totalEntriesFilter">
-                <mat-icon color="primary" matSuffix>search</mat-icon>
-            </mat-form-field>
-        </div>
+<div *ngIf="formService.dataSource?.data; else noRegisterFound">
+    <div class="attendance-status-info">
+        <span> Attendance Date: {{formService.queriedDate | date}}</span>
+        <button mat-stroked-button [matBadge]="formService.getUnMarkedCount()" matBadgeColor="primary" color="primary">
+            Unmarked </button>
+        <button mat-stroked-button [matBadge]="formService.getEmployeeCount(statusEnum.Present)" matBadgeColor="primary"
+            color="primary"> Present </button>
+        <button mat-stroked-button [matBadge]="formService.getEmployeeCount(statusEnum.Absent)" matBadgeColor="warn"
+            color="warn"> Absent </button>
+        <button mat-stroked-button [matBadge]="formService.getEmployeeCount(statusEnum.HalfDay)" matBadgeColor="accent"
+            color="accent"> Half-Day </button>
     </div>
-    <div class="entries-container">
-        <div class="example-container">
-            <h2>Total ({{formService.filteredTotalEntries.length}})</h2>
-            <div cdkDropList #totalList="cdkDropList" [cdkDropListData]="formService.filteredTotalEntries"
-                [cdkDropListConnectedTo]="[presentList, absentList, halfDayList]" class="example-list"
-                (cdkDropListDropped)="formService.drop($event)">
-                <div class="example-box" *ngFor="let item of formService.filteredTotalEntries" cdkDrag>
-                    {{item.employeeName}}</div>
-            </div>
-        </div>
-
-        <div class="example-container">
-            <h2>Present ({{formService.presentEntries.length}})</h2>
-            <div cdkDropList #presentList="cdkDropList" [cdkDropListData]="formService.presentEntries"
-                [cdkDropListConnectedTo]="[totalList, presentList, halfDayList]" class="example-list"
-                (cdkDropListDropped)="formService.drop($event)">
-                <div class="example-box" *ngFor="let item of formService.presentEntries" cdkDrag>{{item.employeeName}}
-                </div>
-            </div>
-        </div>
-
-        <div class="example-container">
-            <h2>Absent ({{formService.absentEntries.length}})</h2>
-            <div cdkDropList #absentList="cdkDropList" [cdkDropListData]="formService.absentEntries"
-                [cdkDropListConnectedTo]="[totalList, presentList, halfDayList]" class="example-list"
-                (cdkDropListDropped)="formService.drop($event)">
-                <div class="example-box" *ngFor="let item of formService.absentEntries" cdkDrag>{{item.employeeName}}
-                </div>
-            </div>
-        </div>
-
-        <div class="example-container">
-            <h2>Half Day ({{formService.halfDayEntries.length}})</h2>
-            <div cdkDropList #halfDayList="cdkDropList" [cdkDropListData]="formService.halfDayEntries"
-                [cdkDropListConnectedTo]="[totalList, presentList, absentList]" class="example-list"
-                (cdkDropListDropped)="formService.drop($event)">
-                <div class="example-box" *ngFor="let item of formService.halfDayEntries" cdkDrag>{{item.employeeName}}
-                </div>
-            </div>
-        </div>
+    <div class="grid-container">
+        <app-ammr-grid [columns]="formService.columns" [dataSource]="formService.dataSource"
+            [loading]="formService.loading" [readOnly]="true"></app-ammr-grid>
     </div>
+
     <div class="footer">
         <app-amrr-action-row [loading]="formService.saving" (add)="formService.addAttendance()"
             (addAndClose)="formService.addAttendanceAndClose()" (close)="formService.cancel()"></app-amrr-action-row>
@@ -76,4 +42,12 @@
     <div style="display: flex; justify-content: center; align-items:center; height: 52vh;">
         No Register found
     </div>
+</ng-template>
+
+<ng-template #statusTemplate let-row="row">
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="row.status">
+        <mat-radio-button [color]="'primary'" value="1">Present</mat-radio-button>
+        <mat-radio-button [color]="'warn'" value="2"></mat-radio-button>
+        <mat-radio-button [color]="'accent'" value="3"></mat-radio-button>
+    </mat-radio-group>
 </ng-template>
