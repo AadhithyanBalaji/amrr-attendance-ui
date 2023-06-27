@@ -47,7 +47,7 @@
 <ng-template #statusTemplate let-row="row">
     <mat-radio-group aria-label="Select an option" [(ngModel)]="row.status">
         <mat-radio-button [color]="'primary'" value="1">Present</mat-radio-button>
-        <mat-radio-button [color]="'warn'" value="2"></mat-radio-button>
-        <mat-radio-button [color]="'accent'" value="3"></mat-radio-button>
+        <mat-radio-button [color]="'warn'" value="2">Absent</mat-radio-button>
+        <mat-radio-button [color]="'accent'" value="3">Half Day</mat-radio-button>
     </mat-radio-group>
 </ng-template>
