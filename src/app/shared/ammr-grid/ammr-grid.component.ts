@@ -28,6 +28,7 @@ export class AmmrGridComponent implements OnChanges {
   @Input() autoHeight = false;
   @Input() allowPagination = true;
   @Input() allowFilter = true;
+  @Input() maxHeight: string;
 
   @Output() onEdit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
