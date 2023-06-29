@@ -75,10 +75,10 @@ export class ExcelJSService {
   ) {
     const attendanceDate = new Date(filterData.generatedOn);
     const year = attendanceDate.getFullYear();
-    const month = attendanceDate.getFullYear();
+    const month = attendanceDate.getMonth();
     for (let i = 0; i <= data.length - 1; i++) {
-      const index = i + this.gridHeaderRowIndex;
-      this.setGridCellAt(index, 1, i+1, 'center');
+      const index = i + this.gridHeaderRowIndex + 1;
+      this.setGridCellAt(index, 1, i + 1, 'center');
       this.setGridCellAt(index, 2, data[i].EmployeeName.toUpperCase(), 'left');
       this.setGridCellAt(index, 3, data[i].Designation.toUpperCase(), 'left');
       for (let dayOfMonth = 1; dayOfMonth <= noOfDaysInMonth; dayOfMonth++) {
@@ -116,7 +116,7 @@ export class ExcelJSService {
     for (let i = 1; i <= noOfDaysInMonth; i++) {
       this.setGridCellAt(
         this.gridHeaderRowIndex,
-        this.gridHeaderRowIndex + i,
+        this.gridHeaderRowIndex + i - 1,
         i,
         'center',
         true
