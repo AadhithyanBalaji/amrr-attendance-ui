@@ -17,7 +17,7 @@ export class AttendanceRegisterFormService {
     readonly excelJsService: ExcelJSService
   ) {}
 
-  columns = [
+  columns: any[] = [
     {
       key: 'sno',
       name: 'S.No.',
@@ -44,17 +44,19 @@ export class AttendanceRegisterFormService {
           {
             key: 'sno',
             name: 'S.No.',
-            type: GridColumnType.Sno,
+            type: GridColumnType.Sno
           },
           {
             key: 'EmployeeName',
             name: 'Employee Name',
             type: GridColumnType.String,
+            sticky: true
           },
           {
             key: 'Designation',
             name: 'Designation',
             type: GridColumnType.String,
+            sticky: true
           },
           {
             key: 'WorkingDays',
