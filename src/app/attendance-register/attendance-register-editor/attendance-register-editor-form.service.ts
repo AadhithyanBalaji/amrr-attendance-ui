@@ -166,18 +166,16 @@ export class AttendanceRegisterEditorFormService {
   }
 
   private getLastBusinessDay(date: Date) {
-    while (!this.isBusinessDay(date)) {
-      date.setDate(date.getDate() - 1);
+    const noOfDays = Helper.getNoOfDays(date);
+    const lastWorkingDayOfTheMonth = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      noOfDays
+    );
+    while (lastWorkingDayOfTheMonth.getDay() === 0) {
+      lastWorkingDayOfTheMonth.setDate(lastWorkingDayOfTheMonth.getDate() - 1);
     }
-    return date;
-  }
-
-  private isBusinessDay(date: Date) {
-    var day = date.getDay();
-    if (day == 0) {
-      return false;
-    }
-    return true;
+    return lastWorkingDayOfTheMonth;
   }
 
   private setupColumns(statusTemplate: TemplateRef<any>) {

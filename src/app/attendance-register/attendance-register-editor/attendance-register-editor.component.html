@@ -1,8 +1,9 @@
 <div style="padding: 15px">
     <app-amrr-page-header [title]="'Attendance Entry'" [actionName]="''"></app-amrr-page-header>
 </div>
-<div>
-    <form class="form-container" *ngIf="formService.form" [formGroup]="formService.form" autocomplete="off">
+<div class="filter-panel">
+    <form class="form-container" style="padding: 0 !important" *ngIf="formService.form" [formGroup]="formService.form"
+        autocomplete="off">
         <mat-form-field [style.width.px]="212">
             <mat-label>From Date</mat-label>
             <input matInput formControlName="attendanceDate" [matDatepicker]="fromDatePicker">
@@ -15,9 +16,7 @@
         </div>
         <button mat-flat-button color="primary" (click)="formService.getAttendanceRegister()">View</button>
     </form>
-</div>
-<div *ngIf="formService.dataSource?.data; else noRegisterFound">
-    <div class="attendance-status-info">
+    <div *ngIf="formService.dataSource?.data" class="attendance-status-info">
         <span> Attendance Date: {{formService.queriedDate | date}}</span>
         <button mat-stroked-button [matBadge]="formService.getUnMarkedCount()" matBadgeColor="primary" color="primary">
             Unmarked </button>
@@ -28,9 +27,11 @@
         <button mat-stroked-button [matBadge]="formService.getEmployeeCount(statusEnum.HalfDay)" matBadgeColor="accent"
             color="accent"> Half-Day </button>
     </div>
-    <div class="grid-container">
+</div>
+<div *ngIf="formService.dataSource?.data; else noRegisterFound">
+    <div class="grid-container" style="margin: 15px 15px 90px 15px !important;">
         <app-ammr-grid [columns]="formService.columns" [dataSource]="formService.dataSource"
-            [loading]="formService.loading" [readOnly]="true"></app-ammr-grid>
+            [loading]="formService.loading" [readOnly]="true" [maxHeight]="'50vh'"></app-ammr-grid>
     </div>
 
     <div class="footer">
