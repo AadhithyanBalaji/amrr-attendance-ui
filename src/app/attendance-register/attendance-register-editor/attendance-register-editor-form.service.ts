@@ -80,6 +80,7 @@ export class AttendanceRegisterEditorFormService {
       .post('attendance', {
         attendanceRecords: attendanceRecords,
         attendanceDate: this.getAttendanceDate(),
+        unitId: this.form.controls.unitId.value?.id,
       })
       .pipe(take(1))
       .subscribe((_) => {
