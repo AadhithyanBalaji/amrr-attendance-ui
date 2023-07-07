@@ -48,6 +48,23 @@ export class CompanyBrowserComponent {
       key: Helper.nameof<AmrrCompany>('phoneNumber'),
       name: 'Phone',
     },
+    {
+      key: Helper.nameof<AmrrCompany>('bankDetailId'),
+      name: 'BankDetailId',
+      hidden: true,
+    },
+    {
+      key: Helper.nameof<AmrrCompany>('accountNumber'),
+      name: 'Account #',
+    },
+    {
+      key: Helper.nameof<AmrrCompany>('ifsc'),
+      name: 'IFSC',
+    },
+    {
+      key: Helper.nameof<AmrrCompany>('branchLocation'),
+      name: 'Bank Location',
+    },
   ];
 
   form = new FormGroup({
@@ -66,9 +83,35 @@ export class CompanyBrowserComponent {
       Validators.required,
       Validators.pattern('[- +()0-9]+'),
     ]),
+    bankDetailId: new FormControl(),
+    accountNumber: new FormControl(),
+    ifsc: new FormControl(),
+    branchLocation: new FormControl(),
   });
 
-  constructor(private readonly crudBrowserService: CrudBrowserService) {}
+  constructor(private readonly crudBrowserService: CrudBrowserService) {
+    this.form.controls.accountNumber.setValidators([Validators.min(1)]);
+    this.form.controls.accountNumber.valueChanges.subscribe((accountNumber) => {
+      if (Helper.isTruthy(accountNumber) && accountNumber!.length > 0) {
+        this.form.controls.ifsc.setValidators([
+          Validators.minLength(11),
+          Validators.maxLength(11),
+          Validators.required,
+        ]);
+        this.form.controls.ifsc.enable();
+
+        this.form.controls.branchLocation.setValidators(Validators.required);
+        this.form.controls.branchLocation.enable();
+      } else {
+        this.form.controls.ifsc.clearValidators();
+        this.form.controls.ifsc.disable();
+        this.form.controls.branchLocation.clearValidators();
+        this.form.controls.branchLocation.disable();
+      }
+      this.form.controls.ifsc.updateValueAndValidity();
+      this.form.controls.branchLocation.updateValueAndValidity();
+    });
+  }
 
   onSave(event: any) {
     if (this.form.dirty && this.form.valid) {
@@ -82,7 +125,29 @@ export class CompanyBrowserComponent {
       item.gstNo = this.form.controls.gstNo.value!;
       item.emailAddress = this.form.controls.emailAddress.value!;
       item.phoneNumber = this.form.controls.phoneNumber.value!;
-      this.crudBrowserService.performSave('company', 'Company', item, event, this.form);
+      item.bankDetailId = this.form.controls.bankDetailId.value;
+      const accountNumber =
+        Helper.isTruthy(this.form.controls.accountNumber.value) &&
+        this.form.controls.accountNumber.value !== ''
+          ? this.form.controls.accountNumber.value
+          : null;
+      item.accountNumber = accountNumber;
+      item.ifsc =
+        Helper.isTruthy(accountNumber) && accountNumber!.length > 0
+          ? this.form.controls.ifsc.value
+          : null;
+      item.branchLocation =
+        Helper.isTruthy(accountNumber) && accountNumber!.length > 0
+          ? this.form.controls.branchLocation.value
+          : null;
+
+      this.crudBrowserService.performSave(
+        'company',
+        'Company',
+        item,
+        event,
+        this.form
+      );
     }
   }
 }

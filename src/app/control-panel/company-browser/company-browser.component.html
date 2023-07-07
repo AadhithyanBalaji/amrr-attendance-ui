@@ -52,5 +52,25 @@
                 <input matInput type="number" [formControl]="form.controls.phoneNumber">
             </mat-form-field>
         </div>
+        <mat-divider></mat-divider>
+        <h3>Bank Details</h3>
+        <div>
+            <mat-form-field>
+                <mat-label>Account Number</mat-label>
+                <input matInput type="text" [formControl]="form.controls.accountNumber">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>IFSC</mat-label>
+                <input matInput type="text" [formControl]="form.controls.ifsc">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Branch Location</mat-label>
+                <input matInput type="text" [formControl]="form.controls.branchLocation">
+            </mat-form-field>
+        </div>
     </form>
 </ng-template>

@@ -9,6 +9,7 @@ export class AmrrEmployee implements IAmrrTypeahead {
   unitId: number;
   unitName: string;
   salary: number;
+  hra: number;
   dateOfJoining: string;
   uanNo: string;
   esiNo: string;
@@ -22,4 +23,8 @@ export class AmrrEmployee implements IAmrrTypeahead {
   emailAddress: string;
   phoneNumber: string;
   unit: IAmrrTypeahead;
+  bankDetailId: number;
+  accountNumber: string | null;
+  ifsc: string | null;
+  branchLocation: string | null;
 }

@@ -25,6 +25,7 @@ export class EmployeeBrowserComponent implements OnInit {
     lastName: new FormControl(null, [Validators.required]),
     designation: new FormControl(null, [Validators.required]),
     salary: new FormControl(null, [Validators.required]),
+    hra: new FormControl(null, [Validators.required]),
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
     uanNo: new FormControl(null, [Validators.minLength(12)]),
@@ -41,13 +42,39 @@ export class EmployeeBrowserComponent implements OnInit {
       Validators.required,
       Validators.minLength(10),
     ]),
+    bankDetailId: new FormControl(),
+    accountNumber: new FormControl(),
+    ifsc: new FormControl(),
+    branchLocation: new FormControl(),
   });
 
   constructor(
     private readonly crudBrowserService: CrudBrowserService,
     private readonly apiBusinessService: ApiBusinessService,
     private readonly datePipe: DatePipe
-  ) {}
+  ) {
+    this.form.controls.accountNumber.setValidators([Validators.min(1)]);
+    this.form.controls.accountNumber.valueChanges.subscribe((accountNumber) => {
+      if (Helper.isTruthy(accountNumber) && accountNumber!.length > 0) {
+        this.form.controls.ifsc.setValidators([
+          Validators.minLength(11),
+          Validators.maxLength(11),
+          Validators.required,
+        ]);
+        this.form.controls.ifsc.enable();
+
+        this.form.controls.branchLocation.setValidators(Validators.required);
+        this.form.controls.branchLocation.enable();
+      } else {
+        this.form.controls.ifsc.clearValidators();
+        this.form.controls.ifsc.disable();
+        this.form.controls.branchLocation.clearValidators();
+        this.form.controls.branchLocation.disable();
+      }
+      this.form.controls.ifsc.updateValueAndValidity();
+      this.form.controls.branchLocation.updateValueAndValidity();
+    });
+  }
 
   ngOnInit(): void {
     this.apiBusinessService
@@ -81,6 +108,11 @@ export class EmployeeBrowserComponent implements OnInit {
       {
         key: Helper.nameof<AmrrEmployee>('salary'),
         name: 'Salary',
+        type: GridColumnType.Number,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('hra'),
+        name: 'HRA',
         type: GridColumnType.Number,
       },
       {
@@ -133,6 +165,23 @@ export class EmployeeBrowserComponent implements OnInit {
         name: 'Is Active',
         type: GridColumnType.Boolean,
       },
+      {
+        key: Helper.nameof<AmrrEmployee>('bankDetailId'),
+        name: 'BankDetailId',
+        hidden: true,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('accountNumber'),
+        name: 'Account #',
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('ifsc'),
+        name: 'IFSC',
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('branchLocation'),
+        name: 'Bank Location',
+      },
     ];
   }
 
@@ -144,6 +193,7 @@ export class EmployeeBrowserComponent implements OnInit {
       item.lastName = this.form.controls.lastName.value!;
       item.designation = this.form.controls.designation.value!;
       item.salary = this.form.controls.salary.value!;
+      item.hra = this.form.controls.hra.value!;
       item.unitId = (this.form.controls.unit.value as any).id;
       item.dateOfJoining = this.getFormattedDate(
         this.form.controls.dateOfJoining.value!
@@ -160,6 +210,22 @@ export class EmployeeBrowserComponent implements OnInit {
       item.postalCode = this.form.controls.postalCode.value!;
       item.emailAddress = this.form.controls.emailAddress.value!;
       item.phoneNumber = this.form.controls.phoneNumber.value!;
+      item.bankDetailId = this.form.controls.bankDetailId.value;
+      const accountNumber =
+        Helper.isTruthy(this.form.controls.accountNumber.value) &&
+        this.form.controls.accountNumber.value !== ''
+          ? this.form.controls.accountNumber.value
+          : null;
+      item.accountNumber = accountNumber;
+      item.ifsc =
+        Helper.isTruthy(accountNumber) && accountNumber!.length > 0
+          ? this.form.controls.ifsc.value
+          : null;
+      item.branchLocation =
+        Helper.isTruthy(accountNumber) && accountNumber!.length > 0
+          ? this.form.controls.branchLocation.value
+          : null;
+
       this.crudBrowserService.performSave(
         'employee',
         'Employee',
