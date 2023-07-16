@@ -63,6 +63,7 @@ import { CrudEditorComponent } from './crud-browser/crud-editor.component';
 import { AmrrReportFiltersComponent } from './amrr-report-filters/amrr-report-filters.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatBadgeModule } from '@angular/material/badge';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [
@@ -152,7 +153,8 @@ import { MatBadgeModule } from '@angular/material/badge';
     DialogModule,
     NgxMatSelectSearchModule,
     MatRadioModule,
-    MatBadgeModule
+    MatBadgeModule,
+    NgxMaterialTimepickerModule
   ],
   exports: [
     A11yModule,
@@ -200,7 +202,8 @@ import { MatBadgeModule } from '@angular/material/badge';
     CrudEditorComponent,
     AmrrReportFiltersComponent,
     MatRadioModule,
-    MatBadgeModule
+    MatBadgeModule,
+    NgxMaterialTimepickerModule
   ],
 })
 export class SharedModule {}
