@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Injectable, TemplateRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { take } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 import { Unit } from 'src/app/models/unit.model';
 import { ApiBusinessService } from 'src/app/shared/api-business.service';
 import { AttendanceRegisterEntry } from './attendance-register-entry.model';
@@ -19,6 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AttendanceEditorBrowser } from './attendance-editor-browser.model';
 import { AttendanceStatusEnum } from './attendance-status.enum';
+import { NgxMaterialTimepickerToggleIconDirective } from 'ngx-material-timepicker';
 
 @Injectable()
 export class AttendanceRegisterEditorFormService {
@@ -66,7 +67,7 @@ export class AttendanceRegisterEditorFormService {
     if (Helper.isNullOrUndefined(this.getAttendanceDate())) return;
 
     const attendanceRecords = this.dataSource.data
-      .filter((x) => Helper.isTruthy(x.status))
+      .filter((x) => Helper.isTruthy(x.status) && x.payCycleTypeId === 1)
       .map((x) => ({
         employeeId: x.id,
         isPresent:
@@ -75,13 +76,27 @@ export class AttendanceRegisterEditorFormService {
         attendanceUnit: this.getAttendanceUnit(x.status),
       }));
 
+    const dailyWagesAttendanceRecords = this.dataSource.data
+      .filter((x) => Helper.isTruthy(x.status) && x.payCycleTypeId === 3)
+      .map((x) => ({
+        employeeId: x.id,
+        inTime: x.inTime,
+        outTime: x.outTime,
+      }));
+
     this.saving = true;
-    this.apiBusinessService
-      .post('attendance', {
+    combineLatest([
+      this.apiBusinessService.post('attendance', {
         attendanceRecords: attendanceRecords,
         attendanceDate: this.getAttendanceDate(),
         unitId: this.form.controls.unitId.value?.id,
-      })
+      }),
+      this.apiBusinessService.post('attendance/daily', {
+        attendanceRecords: dailyWagesAttendanceRecords,
+        attendanceDate: this.getAttendanceDate(),
+        unitId: this.form.controls.unitId.value?.id,
+      }),
+    ])
       .pipe(take(1))
       .subscribe((_) => {
         this.snackBar.open('Updated Attendance Register');
@@ -120,6 +135,47 @@ export class AttendanceRegisterEditorFormService {
     ).length;
   }
 
+  inTimeChanged(timeString: string, row: AttendanceEditorBrowser) {
+    row.inTime = this.buildDateTime(timeString) ?? '';
+    row.status = this.getStatusEnumForDailyWages(row.inTime, row.outTime);
+  }
+
+  outTimeChanged(timeString: string, row: AttendanceEditorBrowser) {
+    row.outTime = this.buildDateTime(timeString) ?? '';
+    row.status = this.getStatusEnumForDailyWages(row.inTime, row.outTime);
+  }
+
+  getTimeString(dateTimeString: string): string {
+    return (dateTimeString ?? '') !== ''
+      ? this.datePipe.transform(dateTimeString, 'shortTime') ?? ''
+      : '';
+  }
+
+  isTimeRangeInvalid(inTimeString: string, outTimeString: string): boolean {
+    console.log(inTimeString, outTimeString);
+    return (inTimeString ?? '') !== '' && (outTimeString ?? '') !== ''
+      ? new Date(inTimeString) >= new Date(outTimeString)
+      : false;
+  }
+
+  private buildDateTime(timeString: string): string | null {
+    const timeArr = timeString.split(' ');
+    if (timeArr.length <= 0) return null;
+    const time = timeArr[0].split(':');
+    if (time.length < 2) return null;
+    const hour = +time[0];
+    const mins = +time[1];
+    const attendanceDate = new Date(
+      new Date(this.form.controls.attendanceDate.value).setHours(
+        timeArr[1].trim() === 'AM' ? hour : hour + 12,
+        mins,
+        0,
+        0
+      )
+    );
+    return this.datePipe.transform(attendanceDate, 'YYYY-MM-dd HH:mm:ss') ?? '';
+  }
+
   private getAttendanceDate() {
     return (
       this.datePipe.transform(
@@ -147,7 +203,13 @@ export class AttendanceRegisterEditorFormService {
         const convData = entries.map((x) => ({
           id: x.employeeId,
           name: x.employeeName,
-          status: this.getStatusEnum(x.isPresent, x.attendanceUnit),
+          payCycleTypeId: x.payCycleTypeId,
+          inTime: x.inTime,
+          outTime: x.outTime,
+          status:
+            x.payCycleTypeId === 1
+              ? this.getStatusEnum(x.isPresent, x.attendanceUnit)
+              : this.getStatusEnumForDailyWages(x.inTime, x.outTime),
         }));
         this.dataSource = new MatTableDataSource(convData);
         this.queriedDate = date;
@@ -217,6 +279,21 @@ export class AttendanceRegisterEditorFormService {
       return AttendanceStatusEnum.HalfDay.toString();
     if (Helper.isTruthy(isPresent) && !isPresent)
       return AttendanceStatusEnum.Absent.toString();
+    return null;
+  }
+
+  private getStatusEnumForDailyWages(
+    inTimeString: string,
+    outTimeString: string
+  ) {
+    if ((inTimeString ?? '') === '' || (outTimeString ?? '') === '')
+      return null;
+    var inTime = new Date(inTimeString);
+    var outTime = new Date(outTimeString);
+    var hours = Math.abs(outTime.getTime() - inTime.getTime()) / 36e5;
+    if (hours > 5) return AttendanceStatusEnum.Present.toString();
+    if (hours > 0 && hours <= 5) return AttendanceStatusEnum.HalfDay.toString();
+    if (hours <= 0) return AttendanceStatusEnum.Absent.toString();
     return null;
   }
 }

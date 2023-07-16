@@ -21,3 +21,13 @@
   align-items: baseline;
   justify-content: space-around;
 }
+
+.flex-horizontal {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.flex-horizontal h3 {
+  margin: 0;
+}

@@ -46,9 +46,25 @@
 </ng-template>
 
 <ng-template #statusTemplate let-row="row">
-    <mat-radio-group aria-label="Select an option" [(ngModel)]="row.status">
-        <mat-radio-button [color]="'primary'" value="1">Present</mat-radio-button>
-        <mat-radio-button [color]="'warn'" value="2">Absent</mat-radio-button>
-        <mat-radio-button [color]="'accent'" value="3">Half Day</mat-radio-button>
-    </mat-radio-group>
+    <div *ngIf="row.payCycleTypeId === 1; else dailyWageTemplate">
+        <mat-radio-group aria-label="Select an option" [(ngModel)]="row.status">
+            <mat-radio-button [color]="'primary'" value="1">Present</mat-radio-button>
+            <mat-radio-button [color]="'warn'" value="2">Absent</mat-radio-button>
+            <mat-radio-button [color]="'accent'" value="3">Half Day</mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <ng-template #dailyWageTemplate>
+        <div class="flex-horizontal">
+            <h3>In time :</h3>
+            <ngx-timepicker-field [defaultTime]="formService.getTimeString(row.inTime)" (timeChanged)="formService.inTimeChanged($event, row)"></ngx-timepicker-field>
+            <h3>Out time :</h3>
+            <ngx-timepicker-field [defaultTime]="formService.getTimeString(row.outTime)" (timeChanged)="formService.outTimeChanged($event,row)"></ngx-timepicker-field>
+            
+        </div>
+        <mat-error *ngIf="(row.inTime !== '' && row.outTime === '')
+            || (row.outTime== '' && row.inTime === '')
+            || formService.isTimeRangeInvalid(row.inTime, row.outTime)">
+            Invalid time selection
+        </mat-error>
+    </ng-template>
 </ng-template>
