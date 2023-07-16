@@ -15,14 +15,17 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-employee-browser',
   templateUrl: './employee-browser.component.html',
+  styleUrls: ['./employee-browser.component.css'],
 })
 export class EmployeeBrowserComponent implements OnInit {
   columns: IAmmrGridColumn[];
   units: AmrrUnit[] = [];
+
   form = new FormGroup({
     id: new FormControl(),
     firstName: new FormControl(null, [Validators.required]),
     lastName: new FormControl(null, [Validators.required]),
+    payCycleTypeId: new FormControl(),
     designation: new FormControl(null, [Validators.required]),
     salary: new FormControl(null, [Validators.required]),
     hra: new FormControl(null, [Validators.required]),
@@ -53,6 +56,7 @@ export class EmployeeBrowserComponent implements OnInit {
     private readonly apiBusinessService: ApiBusinessService,
     private readonly datePipe: DatePipe
   ) {
+    this.form.controls.payCycleTypeId.setValidators([Validators.required]);
     this.form.controls.accountNumber.setValidators([Validators.min(1)]);
     this.form.controls.accountNumber.valueChanges.subscribe((accountNumber) => {
       if (Helper.isTruthy(accountNumber) && accountNumber!.length > 0) {
@@ -103,6 +107,11 @@ export class EmployeeBrowserComponent implements OnInit {
       {
         key: Helper.nameof<AmrrEmployee>('unitName'),
         name: 'Unit',
+        type: GridColumnType.String,
+      },
+      {
+        key: Helper.nameof<AmrrEmployee>('payCycleTypeName'),
+        name: 'Pay Cycle',
         type: GridColumnType.String,
       },
       {
@@ -192,6 +201,7 @@ export class EmployeeBrowserComponent implements OnInit {
       item.firstName = this.form.controls.firstName.value!;
       item.lastName = this.form.controls.lastName.value!;
       item.designation = this.form.controls.designation.value!;
+      item.payCycleTypeId = +this.form.controls.payCycleTypeId.value!;
       item.salary = this.form.controls.salary.value!;
       item.hra = this.form.controls.hra.value!;
       item.unitId = (this.form.controls.unit.value as any).id;

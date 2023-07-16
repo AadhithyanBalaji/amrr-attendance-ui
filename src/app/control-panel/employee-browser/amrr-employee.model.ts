@@ -6,6 +6,8 @@ export class AmrrEmployee implements IAmrrTypeahead {
   firstName: string;
   lastName: string;
   designation: string;
+  payCycleTypeId: number;
+  payCycleTypeName: string;
   unitId: number;
   unitName: string;
   salary: number;

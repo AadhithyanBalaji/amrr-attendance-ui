@@ -1,0 +1,37 @@
+.flex-horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.flex-vertical {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.personal-info {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.personal-info mat-form-field {
+  width: 25vw !important;
+}
+
+.account-info,
+.contact-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.second-row div {
+  width: 20vw;
+}
+
+h3 {
+  font-weight: bold;
+}
