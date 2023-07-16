@@ -80,8 +80,8 @@ export class AttendanceRegisterEditorFormService {
       .filter((x) => Helper.isTruthy(x.status) && x.payCycleTypeId === 3)
       .map((x) => ({
         employeeId: x.id,
-        inTime: x.inTime,
-        outTime: x.outTime,
+        inTime: x.inTime.replace('T', ' ').replace('Z', ''),
+        outTime: x.outTime.replace('T', ' ').replace('Z', ''),
       }));
 
     this.saving = true;
@@ -147,7 +147,10 @@ export class AttendanceRegisterEditorFormService {
 
   getTimeString(dateTimeString: string): string {
     return (dateTimeString ?? '') !== ''
-      ? this.datePipe.transform(dateTimeString, 'shortTime') ?? ''
+      ? this.datePipe.transform(
+          dateTimeString.replace('Z', '').replace('T', ' '),
+          'shortTime'
+        ) ?? ''
       : '';
   }
 
