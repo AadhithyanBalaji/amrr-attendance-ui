@@ -37,6 +37,7 @@ export class CrudBrowserComponent implements OnInit {
   @Input() formTemplate: TemplateRef<any>;
   @Input() form: FormGroup<any>;
   @Input() isCustomEditHandler: boolean;
+  @Input() editorWidth: string = '30vw';
   @Output() onSave = new EventEmitter<any>();
   @Output() onEdit = new EventEmitter<any>();
 
@@ -51,7 +52,8 @@ export class CrudBrowserComponent implements OnInit {
       this.onSave,
       this.onEdit,
       this.form,
-      this.isCustomEditHandler
+      this.isCustomEditHandler,
+      this.editorWidth
     );
   }
 }

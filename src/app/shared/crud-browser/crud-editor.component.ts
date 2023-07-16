@@ -10,9 +10,13 @@ export class DummyTypeaheadImpl implements IAmrrTypeahead {
 
 @Component({
   selector: 'app-crud-editor',
-  template: `<div style="width: 30vw">
+  template: `<div [style.width]="data.editorWidth ?? '30vw'">
     <h2 mat-dialog-title>
-      {{ data && data.event?.id !== null ? 'Edit' : 'New' }}
+      {{
+        (data && data.event?.id !== null ? 'Edit' : 'New') +
+          ' ' +
+          data.entityName
+      }}
     </h2>
     <div style="padding: 15px !important" mat-dialog-content>
       <ng-container *ngTemplateOutlet="data.formTemplate"></ng-container>

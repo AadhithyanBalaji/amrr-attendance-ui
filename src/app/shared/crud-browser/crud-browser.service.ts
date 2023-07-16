@@ -31,6 +31,7 @@ export class CrudBrowserService {
   onAdd: EventEmitter<any>;
   form: FormGroup<any>;
   isCustomEditHandler: boolean;
+  editorWidth: string;
 
   constructor(
     private readonly dialog: MatDialog,
@@ -47,7 +48,8 @@ export class CrudBrowserService {
     onSave: EventEmitter<any>,
     onEdit: EventEmitter<any>,
     form: FormGroup<any>,
-    isCustomEditHandler: boolean
+    isCustomEditHandler: boolean,
+    editorWidth: string
   ) {
     this.entityEndpoint = entityEndpoint;
     this.entityName = entityName;
@@ -57,6 +59,7 @@ export class CrudBrowserService {
     this.onEditEmitter = onEdit;
     this.form = form;
     this.isCustomEditHandler = isCustomEditHandler;
+    this.editorWidth = editorWidth;
     this.getData();
   }
 
@@ -163,6 +166,8 @@ export class CrudBrowserService {
         formTemplate: this.formTemplate,
         onSave: this.onSave,
         form: this.form,
+        editorWidth: this.editorWidth,
+        entityName: this.entityName
       },
     };
   }
