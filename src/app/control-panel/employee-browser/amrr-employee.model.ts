@@ -11,6 +11,7 @@ export class AmrrEmployee implements IAmrrTypeahead {
   unitId: number;
   unitName: string;
   salary: number;
+  basic: number;
   hra: number;
   dateOfJoining: string;
   uanNo: string;

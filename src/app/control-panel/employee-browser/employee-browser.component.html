@@ -71,8 +71,12 @@
                         <input matInput type="number" [formControl]="form.controls.salary" required>
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>HRA</mat-label>
-                        <input matInput type="number" [formControl]="form.controls.hra" required>
+                        <mat-label>Basic (70%)</mat-label>
+                        <input matInput type="number" [formControl]="form.controls.basic" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>HRA (30%)</mat-label>
+                        <input matInput type="number" [formControl]="form.controls.hra" required [disabled]="true">
                     </mat-form-field>
                 </div>
                 <div class="bank-details">

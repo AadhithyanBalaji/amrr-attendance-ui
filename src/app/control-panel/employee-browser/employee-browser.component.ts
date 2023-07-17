@@ -28,7 +28,8 @@ export class EmployeeBrowserComponent implements OnInit {
     payCycleTypeId: new FormControl(),
     designation: new FormControl(null, [Validators.required]),
     salary: new FormControl(null, [Validators.required]),
-    hra: new FormControl(null, [Validators.required]),
+    basic: new FormControl({ value: 0, disabled: true }, [Validators.required]),
+    hra: new FormControl({ value: 0, disabled: true }, [Validators.required]),
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
     uanNo: new FormControl(null, [Validators.minLength(12)]),
@@ -77,6 +78,12 @@ export class EmployeeBrowserComponent implements OnInit {
       }
       this.form.controls.ifsc.updateValueAndValidity();
       this.form.controls.branchLocation.updateValueAndValidity();
+    });
+    this.form.controls.salary.valueChanges.subscribe((salary) => {
+      this.form.controls.basic.setValue(salary! * 0.7);
+      this.form.controls.basic.updateValueAndValidity();
+      this.form.controls.hra.setValue(salary! * 0.3);
+      this.form.controls.hra.updateValueAndValidity();
     });
   }
 
@@ -202,7 +209,7 @@ export class EmployeeBrowserComponent implements OnInit {
       item.lastName = this.form.controls.lastName.value!;
       item.designation = this.form.controls.designation.value!;
       item.payCycleTypeId = +this.form.controls.payCycleTypeId.value!;
-      item.salary = this.form.controls.salary.value!;
+      item.basic = this.form.controls.basic.value!;
       item.hra = this.form.controls.hra.value!;
       item.unitId = (this.form.controls.unit.value as any).id;
       item.dateOfJoining = this.getFormattedDate(
