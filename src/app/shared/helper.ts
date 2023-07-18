@@ -96,10 +96,13 @@ export default class Helper {
         ]);
         form.controls.accountNumber.enable();
       } else {
+        form.controls.ifsc.setValue('');
         form.controls.ifsc.clearValidators();
         form.controls.ifsc.disable();
+        form.controls.branchLocation.setValue('');
         form.controls.branchLocation.clearValidators();
         form.controls.branchLocation.disable();
+        form.controls.accountNumber.setValue('');
         form.controls.accountNumber.clearValidators();
         form.controls.accountNumber.disable();
       }
