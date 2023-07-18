@@ -11,6 +11,7 @@ export class AmrrCompany implements IAmrrTypeahead {
   emailAddress: string;
   phoneNumber: string;
   bankDetailId: number;
+  bankName: string | null;
   accountNumber: string | null;
   ifsc: string | null;
   branchLocation: string | null;

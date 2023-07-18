@@ -54,6 +54,10 @@ export class CompanyBrowserComponent {
       hidden: true,
     },
     {
+      key: Helper.nameof<AmrrCompany>('bankName'),
+      name: 'Bank',
+    },
+    {
       key: Helper.nameof<AmrrCompany>('accountNumber'),
       name: 'Account #',
     },
@@ -84,6 +88,7 @@ export class CompanyBrowserComponent {
       Validators.pattern('[- +()0-9]+'),
     ]),
     bankDetailId: new FormControl(),
+    bankName: new FormControl(),
     accountNumber: new FormControl(),
     ifsc: new FormControl(),
     branchLocation: new FormControl(),
@@ -91,26 +96,7 @@ export class CompanyBrowserComponent {
 
   constructor(private readonly crudBrowserService: CrudBrowserService) {
     this.form.controls.accountNumber.setValidators([Validators.min(1)]);
-    this.form.controls.accountNumber.valueChanges.subscribe((accountNumber) => {
-      if (Helper.isTruthy(accountNumber) && accountNumber!.length > 0) {
-        this.form.controls.ifsc.setValidators([
-          Validators.minLength(11),
-          Validators.maxLength(11),
-          Validators.required,
-        ]);
-        this.form.controls.ifsc.enable();
-
-        this.form.controls.branchLocation.setValidators(Validators.required);
-        this.form.controls.branchLocation.enable();
-      } else {
-        this.form.controls.ifsc.clearValidators();
-        this.form.controls.ifsc.disable();
-        this.form.controls.branchLocation.clearValidators();
-        this.form.controls.branchLocation.disable();
-      }
-      this.form.controls.ifsc.updateValueAndValidity();
-      this.form.controls.branchLocation.updateValueAndValidity();
-    });
+    Helper.setupBankControlsListener(this.form);
   }
 
   onSave(event: any) {
@@ -126,6 +112,7 @@ export class CompanyBrowserComponent {
       item.emailAddress = this.form.controls.emailAddress.value!;
       item.phoneNumber = this.form.controls.phoneNumber.value!;
       item.bankDetailId = this.form.controls.bankDetailId.value;
+      item.bankName = this.form.controls.bankName.value;
       const accountNumber =
         Helper.isTruthy(this.form.controls.accountNumber.value) &&
         this.form.controls.accountNumber.value !== ''

@@ -27,6 +27,7 @@ export class AmrrEmployee implements IAmrrTypeahead {
   phoneNumber: string;
   unit: IAmrrTypeahead;
   bankDetailId: number;
+  bankName: string | null;
   accountNumber: string | null;
   ifsc: string | null;
   branchLocation: string | null;

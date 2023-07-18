@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { IAmrrTypeahead } from './amrr-typeahead.interface';
+import { FormGroup, Validators } from '@angular/forms';
 
 export default class Helper {
   public static isTruthy(value: any) {
@@ -75,5 +76,36 @@ export default class Helper {
       'December',
     ];
     return months[month];
+  }
+
+  public static setupBankControlsListener(form: any) {
+    form.controls.bankName.valueChanges.subscribe((bankName) => {
+      if (Helper.isTruthy(bankName) && bankName!.length > 0) {
+        form.controls.ifsc.setValidators([
+          Validators.minLength(11),
+          Validators.maxLength(11),
+          Validators.required,
+        ]);
+        form.controls.ifsc.enable();
+
+        form.controls.branchLocation.setValidators(Validators.required);
+        form.controls.branchLocation.enable();
+        form.controls.accountNumber.setValidators([
+          Validators.required,
+          Validators.min(1),
+        ]);
+        form.controls.accountNumber.enable();
+      } else {
+        form.controls.ifsc.clearValidators();
+        form.controls.ifsc.disable();
+        form.controls.branchLocation.clearValidators();
+        form.controls.branchLocation.disable();
+        form.controls.accountNumber.clearValidators();
+        form.controls.accountNumber.disable();
+      }
+      form.controls.ifsc.updateValueAndValidity();
+      form.controls.branchLocation.updateValueAndValidity();
+      form.controls.accountNumber.updateValueAndValidity();
+    });
   }
 }

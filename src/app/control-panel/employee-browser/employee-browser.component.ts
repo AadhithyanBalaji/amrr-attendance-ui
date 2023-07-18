@@ -28,8 +28,8 @@ export class EmployeeBrowserComponent implements OnInit {
     payCycleTypeId: new FormControl(),
     designation: new FormControl(null, [Validators.required]),
     salary: new FormControl(null, [Validators.required]),
-    basic: new FormControl({ value: 0, disabled: true }, [Validators.required]),
-    hra: new FormControl({ value: 0, disabled: true }, [Validators.required]),
+    basic: new FormControl(0, [Validators.required]),
+    hra: new FormControl(0, [Validators.required]),
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
     uanNo: new FormControl(null, [Validators.minLength(12)]),
@@ -47,6 +47,7 @@ export class EmployeeBrowserComponent implements OnInit {
       Validators.minLength(10),
     ]),
     bankDetailId: new FormControl(),
+    bankName: new FormControl(),
     accountNumber: new FormControl(),
     ifsc: new FormControl(),
     branchLocation: new FormControl(),
@@ -58,27 +59,7 @@ export class EmployeeBrowserComponent implements OnInit {
     private readonly datePipe: DatePipe
   ) {
     this.form.controls.payCycleTypeId.setValidators([Validators.required]);
-    this.form.controls.accountNumber.setValidators([Validators.min(1)]);
-    this.form.controls.accountNumber.valueChanges.subscribe((accountNumber) => {
-      if (Helper.isTruthy(accountNumber) && accountNumber!.length > 0) {
-        this.form.controls.ifsc.setValidators([
-          Validators.minLength(11),
-          Validators.maxLength(11),
-          Validators.required,
-        ]);
-        this.form.controls.ifsc.enable();
-
-        this.form.controls.branchLocation.setValidators(Validators.required);
-        this.form.controls.branchLocation.enable();
-      } else {
-        this.form.controls.ifsc.clearValidators();
-        this.form.controls.ifsc.disable();
-        this.form.controls.branchLocation.clearValidators();
-        this.form.controls.branchLocation.disable();
-      }
-      this.form.controls.ifsc.updateValueAndValidity();
-      this.form.controls.branchLocation.updateValueAndValidity();
-    });
+    Helper.setupBankControlsListener(this.form);
     this.form.controls.salary.valueChanges.subscribe((salary) => {
       this.form.controls.basic.setValue(salary! * 0.7);
       this.form.controls.basic.updateValueAndValidity();
@@ -187,6 +168,10 @@ export class EmployeeBrowserComponent implements OnInit {
         hidden: true,
       },
       {
+        key: Helper.nameof<AmrrEmployee>('bankName'),
+        name: 'Bank',
+      },
+      {
         key: Helper.nameof<AmrrEmployee>('accountNumber'),
         name: 'Account #',
       },
@@ -228,6 +213,7 @@ export class EmployeeBrowserComponent implements OnInit {
       item.emailAddress = this.form.controls.emailAddress.value!;
       item.phoneNumber = this.form.controls.phoneNumber.value!;
       item.bankDetailId = this.form.controls.bankDetailId.value;
+      item.bankName = this.form.controls.bankName.value;
       const accountNumber =
         Helper.isTruthy(this.form.controls.accountNumber.value) &&
         this.form.controls.accountNumber.value !== ''

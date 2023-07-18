@@ -82,6 +82,10 @@
                 <div class="bank-details">
                     <h3>Bank Info</h3>
                     <mat-form-field>
+                        <mat-label>Bank Name</mat-label>
+                        <input matInput type="text" [formControl]="form.controls.bankName">
+                    </mat-form-field>
+                    <mat-form-field>
                         <mat-label>Account Number</mat-label>
                         <input matInput type="text" [formControl]="form.controls.accountNumber">
                     </mat-form-field>
