@@ -7,10 +7,8 @@ import { ApiBusinessService } from 'src/app/shared/api-business.service';
 import { AttendanceRegisterEntry } from './attendance-register-entry.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import Helper from 'src/app/shared/helper';
-import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
-import { PayslipService } from 'src/app/payslip-browser/payslip.service';
 import {
   GridColumnType,
   IAmmrGridColumn,
@@ -19,7 +17,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { AttendanceEditorBrowser } from './attendance-editor-browser.model';
 import { AttendanceStatusEnum } from './attendance-status.enum';
-import { NgxMaterialTimepickerToggleIconDirective } from 'ngx-material-timepicker';
 
 @Injectable()
 export class AttendanceRegisterEditorFormService {
@@ -40,8 +37,7 @@ export class AttendanceRegisterEditorFormService {
     private readonly datePipe: DatePipe,
     private readonly snackBar: MatSnackBar,
     private readonly authService: AuthService,
-    private readonly router: Router,
-    private readonly payslipService: PayslipService
+    private readonly router: Router
   ) {}
 
   init(statusTemplate: TemplateRef<any>) {
@@ -100,15 +96,6 @@ export class AttendanceRegisterEditorFormService {
       .pipe(take(1))
       .subscribe((_) => {
         this.snackBar.open('Updated Attendance Register');
-        const attendanceDateForm = new Date(
-          this.form.controls.attendanceDate.value
-        );
-        const lastBusinessDay = this.getLastBusinessDay(
-          new Date(this.form.controls.attendanceDate.value)
-        );
-        if (attendanceDateForm.getDate() === lastBusinessDay.getDate()) {
-          this.requestPayslipGeneration();
-        }
         this.saving = false;
       });
   }
@@ -218,30 +205,6 @@ export class AttendanceRegisterEditorFormService {
         this.queriedDate = date;
         this.loading = false;
       });
-  }
-
-  private requestPayslipGeneration() {
-    const companyId =
-      this.units.find((u) => u.id === this.form.controls.unitId.value?.id)
-        ?.companyId ?? 0;
-    const payCycleDate = Helper.getAttendanceDate(
-      this.form.controls.attendanceDate.value,
-      this.datePipe
-    );
-    this.payslipService.generatePayslips(payCycleDate, companyId);
-  }
-
-  private getLastBusinessDay(date: Date) {
-    const noOfDays = Helper.getNoOfDays(date);
-    const lastWorkingDayOfTheMonth = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      noOfDays
-    );
-    while (lastWorkingDayOfTheMonth.getDay() === 0) {
-      lastWorkingDayOfTheMonth.setDate(lastWorkingDayOfTheMonth.getDate() - 1);
-    }
-    return lastWorkingDayOfTheMonth;
   }
 
   private setupColumns(statusTemplate: TemplateRef<any>) {

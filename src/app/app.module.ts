@@ -26,6 +26,7 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
 import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
 import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-browser.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { PayslipAllowanceEditorComponent } from './payslip-browser/payslip-allowance-editor/payslip-allowance-editor.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     AmrrChangePasswordComponent,
     PageNotFoundComponent,
     PayslipBrowserComponent,
-    BonusBrowserComponent
+    BonusBrowserComponent,
+    PayslipAllowanceEditorComponent
   ],
   imports: [
     BrowserModule,

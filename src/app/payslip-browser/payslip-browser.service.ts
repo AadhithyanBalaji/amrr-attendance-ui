@@ -6,7 +6,7 @@ import {
 import Helper from '../shared/helper';
 import { PayslipBrowser } from './payslip-browser.model';
 import { ApiBusinessService } from '../shared/api-business.service';
-import { combineLatest, take } from 'rxjs';
+import { take } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DatePipe } from '@angular/common';
@@ -19,7 +19,8 @@ import { PdfService } from './pdf.service';
 import { AmrrEmployee } from '../control-panel/employee-browser/amrr-employee.model';
 import { IAmrrTypeahead } from '../shared/amrr-typeahead.interface';
 import { Router } from '@angular/router';
-import { PayslipService } from './payslip.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PayslipAllowanceEditorComponent } from './payslip-allowance-editor/payslip-allowance-editor.component';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +83,11 @@ export class PayslipBrowserService {
       type: GridColumnType.Number,
     },
     {
+      key: Helper.nameof<PayslipBrowser>('petrolAllowance'),
+      name: 'Petrol Allowance',
+      type: GridColumnType.Number,
+    },
+    {
       key: Helper.nameof<PayslipBrowser>('totalPay'),
       name: 'Total',
       type: GridColumnType.Number,
@@ -113,7 +119,7 @@ export class PayslipBrowserService {
     private readonly snackBar: MatSnackBar,
     private readonly pdfService: PdfService,
     private readonly router: Router,
-    private readonly payslipService: PayslipService
+    private readonly dialog: MatDialog
   ) {}
 
   init() {
@@ -167,20 +173,33 @@ export class PayslipBrowserService {
       );
       return;
     }
-    this.actionLoading = true;
-    this.payslipService
-      .generatePayslips(
-        Helper.getAttendanceDate(this.form.controls.month.value, this.datePipe),
-        filterData!.companyId
-      )
+
+    this.apiBusinessService
+      .post('payslip/getEligibleEmployees', {
+        generatedOn: Helper.getAttendanceDate(
+          this.form.controls.month.value,
+          this.datePipe
+        ),
+        companyId: filterData!.companyId,
+      })
       .pipe(take(1))
-      .subscribe(
-        (_) => {
-          this.actionLoading = false;
-          this.onViewClicked();
-        },
-        (error) => (this.actionLoading = false)
-      );
+      .subscribe((result) => {
+        this.dialog
+          .open(PayslipAllowanceEditorComponent, {
+            data: {
+              empRecords: result,
+              companyId: filterData!.companyId,
+              generatedOn: Helper.getAttendanceDate(
+                this.form.controls.month.value,
+                this.datePipe
+              ),
+              userId: this.authService.getUserId(),
+            },
+          })
+          .afterClosed()
+          .pipe(take(1))
+          .subscribe((_) => this.getBrowserData(filterData));
+      });
   }
 
   printPayslips() {

@@ -22,6 +22,7 @@ export class PayslipBrowser {
   esiComponent: number;
   pfComponent: number;
   bonusComponent: number;
+  petrolAllowance: number;
   bonusId: number;
   grossSalary: number;
   workingDays: number;

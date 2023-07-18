@@ -1,0 +1,23 @@
+<div class="allowance-editor-container">
+    <app-amrr-page-header [title]="'Allowance editor'" [actionName]="''"></app-amrr-page-header>
+    <div class="grid-container">
+        <app-ammr-grid [columns]="columns" [dataSource]="dataSource" [readOnly]="true" [maxHeight]="'calc(100vh - 350px)'"></app-ammr-grid>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-flat-button color="primary" (click)="generate()"> Generate</button>
+    </mat-dialog-actions>
+</div>
+<ng-template #empNameTemplate let-row="row">
+    <div [ngClass]="{'text-orange': row.isOvertime === 1}">
+        {{row.employeeName}}
+    </div>
+</ng-template>
+<ng-template #allowanceTemplate let-row="row">
+    <div class="form-field-container">
+        <mat-form-field>
+            <input matInput type="number" [(ngModel)]="row.petrolAllowance" [required]="row.isOvertime === 1">
+            <mat-icon matSuffix>currency_rupee</mat-icon>
+        </mat-form-field>
+    </div>
+</ng-template>
