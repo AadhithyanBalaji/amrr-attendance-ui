@@ -25,6 +25,14 @@
                         <span class="ml-text">Payslip</span>
                     </div>
                 </a>
+                <a *ngIf="authService.isLoggedInUserAdmin()" [routerLink]="['salaryAdvance']">
+                    <div class="menu-link" routerLinkActive="route-active">
+                        <span class="ml-icon">
+                            <mat-icon aria-hidden="false" aria-label="Payslip" fontIcon="payments"></mat-icon>
+                        </span>
+                        <span class="ml-text">Salary Advances</span>
+                    </div>
+                </a>
                 <mat-expansion-panel *ngIf="authService.isLoggedInUserAdmin()">
                     <mat-expansion-panel-header>
                         <mat-panel-title>

@@ -16,6 +16,7 @@ import { AmrrChangePasswordComponent } from './auth/amrr-change-password/amrr-ch
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.component';
 import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-browser.component';
+import { SalaryAdvanceBrowserComponent } from './salary-advance-browser/salary-advance-browser.component';
 
 const routes: Routes = [
   { path: 'login', component: AmrrLoginComponent },
@@ -29,6 +30,10 @@ const routes: Routes = [
       {
         path: 'attendanceEditor',
         component: AttendanceRegisterEditorComponent,
+      },
+      {
+        path: 'salaryAdvance',
+        component: SalaryAdvanceBrowserComponent,
       },
       {
         path: 'payslip',

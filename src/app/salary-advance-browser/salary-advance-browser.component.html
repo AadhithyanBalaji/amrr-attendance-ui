@@ -1,0 +1,23 @@
+<app-crud-browser [entityEndpoint]="'salaryAdvance'" [entityName]="'Salary Advance'" [columns]="columns"
+    [formTemplate]="formTemplate" [form]="form" [isCustomEditHandler]="true" (onSave)="onSave($event)"
+    (onEdit)="onEdit($event)">
+</app-crud-browser>
+
+<ng-template #formTemplate>
+    <form [formGroup]="form" autocomplete="off">
+        <div>
+            <app-amrr-select-with-search [title]="'Employee'" [ctrl]="form.controls.employee"
+                [options]="employees"></app-amrr-select-with-search>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Salary</mat-label>
+                <input matInput type="number" [formControl]="form.controls.salary" required>
+            </mat-form-field>
+        </div>
+        <mat-form-field>
+            <mat-label>Advance amount</mat-label>
+            <input matInput type="number" [formControl]="form.controls.advanceAmount" required>
+        </mat-form-field>
+    </form>
+</ng-template>

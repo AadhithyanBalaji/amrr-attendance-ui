@@ -27,6 +27,7 @@ import { PayslipBrowserComponent } from './payslip-browser/payslip-browser.compo
 import { BonusBrowserComponent } from './control-panel/bonus-browser/bonus-browser.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { PayslipAllowanceEditorComponent } from './payslip-browser/payslip-allowance-editor/payslip-allowance-editor.component';
+import { SalaryAdvanceBrowserComponent } from './salary-advance-browser/salary-advance-browser.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { PayslipAllowanceEditorComponent } from './payslip-browser/payslip-allow
     PageNotFoundComponent,
     PayslipBrowserComponent,
     BonusBrowserComponent,
-    PayslipAllowanceEditorComponent
+    PayslipAllowanceEditorComponent,
+    SalaryAdvanceBrowserComponent
   ],
   imports: [
     BrowserModule,
