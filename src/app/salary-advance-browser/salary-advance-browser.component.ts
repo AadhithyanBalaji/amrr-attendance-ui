@@ -44,7 +44,7 @@ export class SalaryAdvanceBrowserComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiBusinessService
-      .get('employee/0')
+      .get('employee/0/1')
       .pipe(take(1))
       .subscribe(
         (data: any) =>

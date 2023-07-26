@@ -92,7 +92,7 @@ export class AmrrReportFiltersComponent implements OnInit {
 
     this.form.controls.unit.valueChanges.subscribe((unit: any) => {
       this.apiBusinessService
-        .get(`employee/${unit.id}`)
+        .get(`employee/${unit.id}/0`)
         .pipe(take(1))
         .subscribe((employees: any) => {
           const dataSet = employees.recordset satisfies AmrrEmployee[];

@@ -67,7 +67,7 @@ export class BonusBrowserComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiBusinessService
-      .get('employee/0')
+      .get('employee/0/0')
       .pipe(take(1))
       .subscribe(
         (data: any) =>
