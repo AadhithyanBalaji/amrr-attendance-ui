@@ -14,9 +14,9 @@ export class AmrrEmployee implements IAmrrTypeahead {
   basic: number;
   hra: number;
   dateOfJoining: string;
-  uanNo: string;
-  esiNo: string;
-  aadharNo: string;
+  uanNo: string | null;
+  esiNo: string | null;
+  aadharNo: string | null;
   isActive: number | boolean;
   inActiveSince: Date | null;
   addressLine1: string;

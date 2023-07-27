@@ -108,6 +108,11 @@ export class EmployeeBrowserComponent implements OnInit {
         type: GridColumnType.Number,
       },
       {
+        key: Helper.nameof<AmrrEmployee>('basic'),
+        name: 'Basic',
+        type: GridColumnType.Number,
+      },
+      {
         key: Helper.nameof<AmrrEmployee>('hra'),
         name: 'HRA',
         type: GridColumnType.Number,
@@ -200,9 +205,11 @@ export class EmployeeBrowserComponent implements OnInit {
       item.dateOfJoining = this.getFormattedDate(
         this.form.controls.dateOfJoining.value!
       );
-      item.uanNo = this.form.controls.uanNo.value!;
-      item.esiNo = this.form.controls.esiNo.value!;
-      item.aadharNo = this.form.controls.aadharNo.value!;
+      item.uanNo = this.extractNumberValue(this.form.controls.uanNo.value!);
+      item.esiNo = this.extractNumberValue(this.form.controls.esiNo.value!);
+      item.aadharNo = this.extractNumberValue(
+        this.form.controls.aadharNo.value!
+      );
       item.isActive = this.form.controls.isActive.value! ? 1 : 0;
       item.inActiveSince =
         Helper.isTruthy(item.isActive) && !item.isActive ? new Date() : null;
@@ -252,5 +259,9 @@ export class EmployeeBrowserComponent implements OnInit {
         'YYYY-MM-dd'
       ) ?? ''
     );
+  }
+
+  private extractNumberValue(uanNo: never): string | null {
+    return Helper.isNullOrUndefined(uanNo) || uanNo === '' ? null : uanNo;
   }
 }
