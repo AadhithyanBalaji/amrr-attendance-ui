@@ -18,6 +18,14 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./employee-browser.component.css'],
 })
 export class EmployeeBrowserComponent implements OnInit {
+  @ViewChild('idTemplate', { static: true })
+  idTemplate: TemplateRef<any>;
+  @ViewChild('contactTemplate', { static: true })
+  contactTemplate: TemplateRef<any>;
+  @ViewChild('salaryTemplate', { static: true })
+  salaryTemplate: TemplateRef<any>;
+  @ViewChild('bankInfo', { static: true })
+  bankInfo: TemplateRef<any>;
   columns: IAmmrGridColumn[];
   units: AmrrUnit[] = [];
 
@@ -105,17 +113,8 @@ export class EmployeeBrowserComponent implements OnInit {
       {
         key: Helper.nameof<AmrrEmployee>('salary'),
         name: 'Salary',
-        type: GridColumnType.Number,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('basic'),
-        name: 'Basic',
-        type: GridColumnType.Number,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('hra'),
-        name: 'HRA',
-        type: GridColumnType.Number,
+        template: this.salaryTemplate,
+        type: GridColumnType.Template,
       },
       {
         key: Helper.nameof<AmrrEmployee>('dateOfJoining'),
@@ -124,43 +123,15 @@ export class EmployeeBrowserComponent implements OnInit {
       },
       {
         key: Helper.nameof<AmrrEmployee>('uanNo'),
-        name: 'UAN #',
-        type: GridColumnType.String,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('esiNo'),
-        name: 'ESI #',
-        type: GridColumnType.String,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('aadharNo'),
-        name: 'Aadhar #',
-        type: GridColumnType.String,
+        name: 'ID',
+        template: this.idTemplate,
+        type: GridColumnType.Template,
       },
       {
         key: Helper.nameof<AmrrEmployee>('addressLine1'),
-        name: 'Address Line 1',
-        type: GridColumnType.String,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('addressLine2'),
-        name: 'Address Line 2',
-        type: GridColumnType.String,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('addressLine3'),
-        name: 'Address Line 3',
-        type: GridColumnType.String,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('emailAddress'),
-        name: 'e-Mail',
-        type: GridColumnType.String,
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('phoneNumber'),
-        name: 'Phone #',
-        type: GridColumnType.String,
+        name: 'Contact Info',
+        template: this.contactTemplate,
+        type: GridColumnType.Template,
       },
       {
         key: Helper.nameof<AmrrEmployee>('isActive'),
@@ -175,18 +146,8 @@ export class EmployeeBrowserComponent implements OnInit {
       {
         key: Helper.nameof<AmrrEmployee>('bankName'),
         name: 'Bank',
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('accountNumber'),
-        name: 'Account #',
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('ifsc'),
-        name: 'IFSC',
-      },
-      {
-        key: Helper.nameof<AmrrEmployee>('branchLocation'),
-        name: 'Bank Location',
+        template: this.bankInfo,
+        type: GridColumnType.Template,
       },
     ];
   }
@@ -259,6 +220,24 @@ export class EmployeeBrowserComponent implements OnInit {
         'YYYY-MM-dd'
       ) ?? ''
     );
+  }
+
+  buildContactString(row: AmrrEmployee) {
+    let arr = [
+      this.getValidString(row.addressLine1),
+      this.getValidString(row.addressLine2),
+      this.getValidString(row.addressLine3),
+      this.getValidString(row.postalCode),
+    ];
+
+    arr = arr.filter((x) => x !== '');
+    return arr.join(',\n');
+  }
+
+  getValidString(str: string) {
+    return Helper.isNullOrUndefined(str) || str.length === 0 || str === ''
+      ? ''
+      : str;
   }
 
   private extractNumberValue(uanNo: never): string | null {

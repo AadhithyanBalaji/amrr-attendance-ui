@@ -136,6 +136,39 @@
 
 <ng-template #salaryTemplate let-row="row">
     <div>
-        Hi frm template
+        <p>Salary - {{row.salary}}</p>
+        <p>Basic - {{row.basic}}</p>
+        <p>HRA - {{row.hra}}</p>
+    </div>
+</ng-template>
+
+<ng-template #idTemplate let-row="row">
+    <div>
+        <p *ngIf="row.uanNo">UAN - {{row.uanNo}}</p>
+        <p *ngIf="row.esiNo">ESI - {{row.esiNo}}</p>
+        <p *ngIf="row.aadharNo">Aadhar - {{row.aadharNo}}</p>
+    </div>
+</ng-template>
+<ng-template #contactTemplate let-row="row">
+    <div class="contact-container">
+        <div>
+            <div *ngIf="row.addressLine1">{{row.addressLine1}},</div>
+            <div *ngIf="row.addressLine2">{{row.addressLine2}},</div>
+            <div *ngIf="row.addressLine3">{{row.addressLine3}},</div>
+            <div *ngIf="row.postalCode">{{row.postalCode}}</div>
+        </div>
+        <span><mat-icon aria-hidden="false" aria-label="Phone"
+                fontIcon="call"></mat-icon>&nbsp;{{row.phoneNumber}}</span>
+        <span><mat-icon aria-hidden="false" aria-label="Phone"
+                fontIcon="email"></mat-icon>&nbsp;{{row.emailAddress}}</span>
+    </div>
+</ng-template>
+<ng-template #bankInfo let-row="row">
+    <div class="bank-info-container" *ngIf="row.bankName">
+        <p>{{row.bankName}}</p>
+        <p># - {{row.accountNumber}}</p>
+        <p>IFSC - {{row.ifsc}}</p>
+        <p> <mat-icon aria-hidden="false" aria-label="Phone" fontIcon="location_on"></mat-icon> - {{row.branchLocation}}
+        </p>
     </div>
 </ng-template>
