@@ -236,7 +236,7 @@ export class PdfService {
               },
               {
                 text: (
-                  payslip.totalPay + (payslip.bonusComponent ?? 0)
+                  payslip.totalPay + (payslip.bonusComponent ?? 0) + payslip.esiComponent + payslip.pfComponent
                 ).toFixed(2),
                 style: 'tableMainHeader',
                 alignment: 'center',
