@@ -37,19 +37,9 @@ export class PdfService {
       payslipContent = [
         ...payslipContent,
         { text: 'Employer Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip, paySlipCycle),
-        {
-          text: '*ESI and PF deposits are made by employer on behalf of employee',
-          style: ['quote', 'small'],
-          alignment: 'right',
-        },
+        this.generatePayslipDocDef(payslip, paySlipCycle, paySlipDate),
         { text: 'Employee Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip, paySlipCycle),
-        {
-          text: '*ESI and PF deposits are made by employer on behalf of employee',
-          style: ['quote', 'small'],
-          alignment: 'right',
-        },
+        this.generatePayslipDocDef(payslip, paySlipCycle, paySlipDate),
         i == payslips.length - 1
           ? { text: '' }
           : { text: '', pageBreak: 'after' },
@@ -74,7 +64,11 @@ export class PdfService {
     this.printPdf(docDef);
   }
 
-  private generatePayslipDocDef(payslip: PayslipBrowser, paySlipCycle: string) {
+  private generatePayslipDocDef(
+    payslip: PayslipBrowser,
+    paySlipCycle: string,
+    paySlipDate: Date
+  ) {
     return [
       {
         style: 'tableExample',
@@ -105,7 +99,7 @@ export class PdfService {
           body: [
             [
               {
-                text: `Salary slip for ${paySlipCycle}`,
+                text: `PAY SLIP FOR ${paySlipCycle.toUpperCase()}`,
                 style: 'tableMainHeader',
                 colSpan: 4,
                 alignment: 'center',
@@ -118,73 +112,61 @@ export class PdfService {
             ...this.buildEmployeeInformation(payslip),
             [
               {
-                text: 'Earnings',
+                text: 'Salary Information',
                 style: 'tableMainHeader',
+                colSpan: 4,
                 alignment: 'center',
               },
-              {
-                text: 'Amount',
-                style: 'tableMainHeader',
-                alignment: 'center',
-              },
-              {
-                text: 'Attendance',
-                style: 'tableMainHeader',
-                alignment: 'center',
-              },
-              {
-                text: 'Days',
-                style: 'tableMainHeader',
-                alignment: 'center',
-              },
+              { text: '' },
+              { text: '' },
+              { text: '' },
             ],
             [
-              {
-                text: 'Salary',
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-              {
-                text: payslip.grossSalary,
-                style: 'tableHeader',
-                alignment: 'center',
-              },
               {
                 text: 'Working Days',
                 style: 'tableHeader',
                 alignment: 'center',
               },
               {
-                text: payslip.workingDays,
+                text: `${payslip.workingDays - payslip.weekendsCount} + ${
+                  payslip.weekendsCount
+                }`,
                 style: 'tableHeader',
                 alignment: 'center',
+              },
+              {
+                text: `EPFO PAID BY COMPANY`,
+                style: 'tableMainHeader',
+                alignment: 'center',
+                rowSpan: 2,
+                margin: [0, 7, 0, 0],
+              },
+              {
+                text: `ESI PAID BY COMPANY`,
+                style: 'tableMainHeader',
+                alignment: 'center',
+                rowSpan: 2,
+                margin: [0, 7, 0, 0],
               },
             ],
             [
               {
-                text: 'Salary Payable',
-                style: 'tableHeader',
+                text: `ESI & EPFO BOTH CONTRIBUTION PAID BY COMPANY`,
+                style: 'tableMainHeader',
                 alignment: 'center',
+                colSpan: 2,
               },
-              {
-                text: payslip.totalPay.toFixed(2),
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-              {
-                text: 'Days Off',
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-              {
-                text: payslip.offDays,
-                style: 'tableHeader',
-                alignment: 'center',
-              },
+              '',
+              '',
+              '',
             ],
             [
               {
-                text: `Employee ESI*`,
+                text: `BASIC SALARY + DA`,
+                alignment: 'center',
+              },
+              {
+                text: payslip.basicComponent.toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -194,78 +176,92 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: 'Company Holidays',
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-              {
-                text: payslip.companyHolidays,
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-            ],
-            [
-              {
-                text: `Employee PF*`,
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-              {
                 text: payslip.pfComponent.toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
-              {
-                text: payslip.bonusComponent ? `Bonus` : '',
-                style: 'tableHeader',
-                alignment: 'center',
-              },
-              {
-                text: payslip.bonusComponent
-                  ? payslip.bonusComponent.toFixed(2)
-                  : '',
-                style: 'tableHeader',
-                alignment: 'center',
-              },
             ],
             [
               {
-                text: 'Net Pay',
+                text: `HRA`,
+                alignment: 'center',
+              },
+              {
+                text: payslip.hraComponent,
+                style: 'tableHeader',
+                alignment: 'center',
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: `PETROL ALLOWANCE`,
+                alignment: 'center',
+              },
+              {
+                text: payslip.petrolAllowance ?? '-',
+                style: 'tableHeader',
+                alignment: 'center',
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: `TOTAL SALARY PAID THROUGH BANK`,
                 style: 'tableMainHeader',
                 alignment: 'center',
               },
+              {
+                text:
+                  payslip.basicComponent +
+                  payslip.hraComponent +
+                  (payslip.petrolAllowance ?? 0),
+                style: 'tableHeader',
+                alignment: 'center',
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: `TOTAL COST TO COMPANY`,
+                alignment: 'center',
+                colSpan: 2,
+              },
+              {},
               {
                 text: (
-                  payslip.totalPay + (payslip.bonusComponent ?? 0) + payslip.esiComponent + payslip.pfComponent
+                  payslip.totalPay +
+                  payslip.esiComponent +
+                  payslip.pfComponent
                 ).toFixed(2),
-                style: 'tableMainHeader',
+                style: 'tableHeader',
                 alignment: 'center',
+                colSpan: 2,
               },
-              { style: 'tableMainHeader', text: '' },
-              { style: 'tableMainHeader', text: '' },
-            ],
-            [
-              {
-                colSpan: 4,
-                text: `In words : \t ${this.inWords(
-                  +(payslip.totalPay + (payslip.bonusComponent ?? 0)).toFixed(2)
-                )}`,
-              },
+              {},
             ],
             [
               {
                 colSpan: 2,
-                text: `Prepared By: \t${payslip.preparedByUser}`,
+                rowSpan: 4,
+                text: `EMPLOYEE SIGNATURE`,
                 style: 'tableMainHeader',
               },
-              {},
+              { text: '' },
               {
                 colSpan: 2,
-                text: 'Received By:',
+                rowSpan: 4,
+                text: 'HR MANAGER SIGNATURE',
                 style: 'tableMainHeader',
               },
-              {},
+              { text: '' },
             ],
+            ['', '', '', ''],
+            ['', '', '', ''],
+            ['', '', '', ''],
           ],
         },
       },
@@ -276,7 +272,7 @@ export class PdfService {
     return [
       [
         {
-          text: 'Company Information',
+          text: payslip.companyName.toUpperCase(),
           style: 'tableMainHeader',
           colSpan: 4,
           alignment: 'center',

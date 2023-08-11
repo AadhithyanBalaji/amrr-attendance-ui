@@ -24,9 +24,11 @@ export class PayslipBrowser {
   bonusComponent: number;
   petrolAllowance: number;
   bonusId: number;
-  grossSalary: number;
+  basicComponent: number;
+  hraComponent: number;
   workingDays: number;
   offDays: number;
   companyHolidays: number;
   preparedByUser: string;
+  weekendsCount: number;
 }
