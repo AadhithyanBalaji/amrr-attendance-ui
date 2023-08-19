@@ -181,6 +181,7 @@ export class PayslipBrowserService {
           this.datePipe
         ),
         companyId: filterData!.companyId,
+        unitId: filterData!.unitId,
       })
       .pipe(take(1))
       .subscribe((result) => {
