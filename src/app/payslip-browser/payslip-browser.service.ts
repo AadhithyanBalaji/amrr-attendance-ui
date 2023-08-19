@@ -160,6 +160,7 @@ export class PayslipBrowserService {
   }
 
   generatePayslips() {
+    this.actionLoading = true;
     const filterData = this.getFilterData();
     if (Helper.isNullOrUndefined(filterData)) {
       return;
@@ -185,6 +186,7 @@ export class PayslipBrowserService {
       })
       .pipe(take(1))
       .subscribe((result) => {
+        this.actionLoading = false;
         this.dialog
           .open(PayslipAllowanceEditorComponent, {
             data: {
