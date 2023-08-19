@@ -187,7 +187,7 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: payslip.hraComponent,
+                text: payslip.hraComponent.toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -200,7 +200,7 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: payslip.petrolAllowance ?? '-',
+                text: payslip.petrolAllowance?.toFixed(2) ?? '-',
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -214,10 +214,11 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text:
+                text: (
                   payslip.basicComponent +
                   payslip.hraComponent +
-                  (payslip.petrolAllowance ?? 0),
+                  (payslip.petrolAllowance ?? 0)
+                ).toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -281,15 +282,21 @@ export class PdfService {
         {},
         {},
       ],
-      this.buildKeyValueRow('Company Name', payslip.companyName),
-      this.buildKeyValueRow(
-        'Company Address',
-        `${payslip.companyAddressLine1} ${this.validateAddressString(
-          payslip.companyAddressLine2
-        )} ${this.validateAddressString(payslip.companyAddressLine3)}, ${
-          payslip.companyPostalCode
-        }`
-      ),
+      [
+        {
+          text: 'Company Address',
+        },
+        {
+          colSpan: 3,
+          text: `${payslip.companyAddressLine1} ${this.validateAddressString(
+            payslip.companyAddressLine2
+          )} ${this.validateAddressString(payslip.companyAddressLine3)}, ${
+            payslip.companyPostalCode
+          }`,
+        },
+        {},
+        {},
+      ],
       [
         {
           text: 'Company Phone #',
@@ -321,28 +328,33 @@ export class PdfService {
         {},
       ],
       this.buildKeyValueRow('Employee Name', payslip.employeeName),
-      this.buildKeyValueRow(
-        'Employee Address',
-        `${payslip.employeeAddressLine1} ${this.validateAddressString(
-          payslip.employeeAddressLine2
-        )} ${this.validateAddressString(payslip.employeeAddressLine3)}, ${
-          payslip.employeePostalCode
-        }`
-      ),
       [
         {
-          text: `Phone # :\n${this.validateString(
-            payslip.employeePhoneNumber
-          )}`,
+          text: 'Employee Address',
         },
         {
-          text: `UAN # :\n${this.validateString(payslip.uanNo)}`,
+          colSpan: 3,
+          text: `${payslip.employeeAddressLine1} ${this.validateAddressString(
+            payslip.employeeAddressLine2
+          )} ${this.validateAddressString(payslip.employeeAddressLine3)}, ${
+            payslip.employeePostalCode
+          }`,
+        },
+        {},
+        {},
+      ],
+      [
+        {
+          text: `Phone # : ${this.validateString(payslip.employeePhoneNumber)}`,
         },
         {
-          text: `ESI # :\n${this.validateString(payslip.esiNo)}`,
+          text: `UAN # : ${this.validateString(payslip.uanNo)}`,
         },
         {
-          text: `Aadhar # :\n${this.validateString(payslip.aadharNo)}`,
+          text: `ESI # : ${this.validateString(payslip.esiNo)}`,
+        },
+        {
+          text: `Aadhar # : ${this.validateString(payslip.aadharNo)}`,
         },
       ],
     ];
@@ -403,12 +415,5 @@ export class PdfService {
         fontSize: 8,
       },
     };
-  }
-
-  private inWords(number: number) {
-    var converted = require('number-to-words');
-    return `${(
-      converted.toWords(number) satisfies string
-    ).toUpperCase()} RUPEES ONLY `;
   }
 }
