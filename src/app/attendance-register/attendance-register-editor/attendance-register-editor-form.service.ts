@@ -200,9 +200,8 @@ export class AttendanceRegisterEditorFormService {
     if (event.checked) {
       row.status = AttendanceStatusEnum.Absent;
     } else {
-      row.status = AttendanceStatusEnum.NotMarked;
+      this.resetTimePicker(row);
     }
-    this.resetTimePicker(row);
   }
 
   private buildDateTime(timeString: string): string | null {
