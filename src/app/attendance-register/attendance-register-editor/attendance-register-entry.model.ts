@@ -7,4 +7,5 @@ export class AttendanceRegisterEntry {
   attendanceUnit: number;
   inTime: string;
   outTime: string;
+  status: number;
 }

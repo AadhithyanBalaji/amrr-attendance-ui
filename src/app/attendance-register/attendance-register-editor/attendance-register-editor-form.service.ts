@@ -60,36 +60,49 @@ export class AttendanceRegisterEditorFormService {
   }
 
   addAttendance() {
-    if (Helper.isNullOrUndefined(this.getAttendanceDate())) return;
+    const attendanceDate = Helper.getAttendanceDate(
+      this.form.controls.attendanceDate.value,
+      this.datePipe
+    );
+    if (Helper.isNullOrUndefined(attendanceDate)) return;
+    if (this.dataSource.data.find((x) => x.hasError)) {
+      this.snackBar.open('Error in one or more entries. Please check');
+      return;
+    }
 
-    const attendanceRecords = this.dataSource.data
-      .filter((x) => Helper.isTruthy(x.status) && x.payCycleTypeId === 1)
+    const attendanceData = this.dataSource.data.filter(
+      (x) => x.status !== AttendanceStatusEnum.NotMarked
+    );
+
+    const attendanceRecords = attendanceData
+      .filter((x) => x.payCycleTypeId === 1)
       .map((x) => ({
         employeeId: x.id,
         isPresent:
-          x.status === AttendanceStatusEnum.Present.toString() ||
-          x.status === AttendanceStatusEnum.HalfDay.toString(),
+          x.status === AttendanceStatusEnum.Present ||
+          x.status === AttendanceStatusEnum.HalfDay,
         attendanceUnit: this.getAttendanceUnit(x.status),
       }));
 
-    const dailyWagesAttendanceRecords = this.dataSource.data
-      .filter((x) => Helper.isTruthy(x.status) && x.payCycleTypeId === 3)
+    const dailyWagesAttendanceRecords = attendanceData
+      .filter((x) => x.payCycleTypeId === 3)
       .map((x) => ({
         employeeId: x.id,
-        inTime: x.inTime.replace('T', ' ').replace('Z', ''),
-        outTime: x.outTime.replace('T', ' ').replace('Z', ''),
+        inTime: x.inTime,
+        outTime: x.outTime,
+        isPresent: x.status !== AttendanceStatusEnum.Absent,
       }));
 
     this.saving = true;
     combineLatest([
       this.apiBusinessService.post('attendance', {
         attendanceRecords: attendanceRecords,
-        attendanceDate: this.getAttendanceDate(),
+        attendanceDate: attendanceDate,
         unitId: this.form.controls.unitId.value?.id,
       }),
       this.apiBusinessService.post('attendance/daily', {
         attendanceRecords: dailyWagesAttendanceRecords,
-        attendanceDate: this.getAttendanceDate(),
+        attendanceDate: attendanceDate,
         unitId: this.form.controls.unitId.value?.id,
       }),
     ])
@@ -106,8 +119,37 @@ export class AttendanceRegisterEditorFormService {
     this.router.navigate(['register']);
   }
 
-  getAttendanceRegister() {
-    this.getAttendanceGridData();
+  getAttendanceGridData() {
+    if (!this.form.valid && !this.form.dirty) return;
+
+    const date = Helper.getAttendanceDate(
+      this.form.controls.attendanceDate.value,
+      this.datePipe
+    );
+    const unitId = this.form.controls.unitId.value?.id;
+
+    if (Helper.isNullOrUndefined(date) || Helper.isNullOrUndefined(unitId))
+      return;
+
+    this.loading = true;
+
+    this.apiBusinessService
+      .get(`attendance/editor/${date}/${unitId}`)
+      .pipe(take(1))
+      .subscribe((data: any) => {
+        const entries = data.recordset satisfies AttendanceRegisterEntry[];
+        const convData = entries.map((x) => ({
+          id: x.employeeId,
+          name: x.employeeName,
+          payCycleTypeId: x.payCycleTypeId,
+          inTime: this.getTimeString(x.inTime),
+          outTime: this.getTimeString(x.outTime),
+          status: x.status ?? AttendanceStatusEnum.NotMarked,
+        }));
+        this.dataSource = new MatTableDataSource(convData);
+        this.queriedDate = date;
+        this.loading = false;
+      });
   }
 
   getUnMarkedCount() {
@@ -117,19 +159,17 @@ export class AttendanceRegisterEditorFormService {
   }
 
   getEmployeeCount(status: AttendanceStatusEnum) {
-    return this.dataSource.data.filter(
-      (x) => Helper.isTruthy(x.status) && x.status === status.toString()
-    ).length;
+    return this.dataSource.data.filter((x) => x.status === status).length;
   }
 
   inTimeChanged(timeString: string, row: AttendanceEditorBrowser) {
     row.inTime = this.buildDateTime(timeString) ?? '';
-    row.status = this.getStatusEnumForDailyWages(row.inTime, row.outTime);
+    row.status = AttendanceStatusEnum.Present;
   }
 
   outTimeChanged(timeString: string, row: AttendanceEditorBrowser) {
     row.outTime = this.buildDateTime(timeString) ?? '';
-    row.status = this.getStatusEnumForDailyWages(row.inTime, row.outTime);
+    row.status = AttendanceStatusEnum.Present;
   }
 
   getTimeString(dateTimeString: string): string {
@@ -141,11 +181,28 @@ export class AttendanceRegisterEditorFormService {
       : '';
   }
 
-  isTimeRangeInvalid(inTimeString: string, outTimeString: string): boolean {
-    console.log(inTimeString, outTimeString);
-    return (inTimeString ?? '') !== '' && (outTimeString ?? '') !== ''
-      ? new Date(inTimeString) >= new Date(outTimeString)
-      : false;
+  isTimeRangeInvalid(row: AttendanceEditorBrowser): boolean {
+    const isValid =
+      (row.inTime ?? '') !== '' && (row.outTime ?? '') !== ''
+        ? new Date(row.inTime) >= new Date(row.outTime)
+        : false;
+    row.hasError = isValid;
+    return isValid;
+  }
+
+  resetTimePicker(row: AttendanceEditorBrowser) {
+    row.inTime = '';
+    row.outTime = '';
+    row.status = AttendanceStatusEnum.NotMarked;
+  }
+
+  onAbsentCheckBoxChanged(event: any, row: AttendanceEditorBrowser) {
+    if (event.checked) {
+      row.status = AttendanceStatusEnum.Absent;
+    } else {
+      row.status = AttendanceStatusEnum.NotMarked;
+    }
+    this.resetTimePicker(row);
   }
 
   private buildDateTime(timeString: string): string | null {
@@ -164,47 +221,6 @@ export class AttendanceRegisterEditorFormService {
       )
     );
     return this.datePipe.transform(attendanceDate, 'YYYY-MM-dd HH:mm:ss') ?? '';
-  }
-
-  private getAttendanceDate() {
-    return (
-      this.datePipe.transform(
-        new Date(
-          new Date(this.form.controls.attendanceDate.value).setHours(0, 0, 0, 0)
-        ),
-        'YYYY-MM-dd HH:mm:ss'
-      ) ?? ''
-    );
-  }
-
-  private getAttendanceGridData() {
-    if (!this.form.valid && !this.form.dirty) return;
-    const date = this.getAttendanceDate();
-    const unitId = this.form.controls.unitId.value?.id;
-    if (Helper.isNullOrUndefined(date) || Helper.isNullOrUndefined(unitId))
-      return;
-    this.loading = true;
-    this.apiBusinessService
-      .get(`attendance/editor/${date}/${unitId}`)
-      .pipe(take(1))
-      .subscribe((data: any) => {
-        const entries: AttendanceRegisterEntry[] =
-          data.recordset satisfies AttendanceRegisterEntry[];
-        const convData = entries.map((x) => ({
-          id: x.employeeId,
-          name: x.employeeName,
-          payCycleTypeId: x.payCycleTypeId,
-          inTime: x.inTime,
-          outTime: x.outTime,
-          status:
-            x.payCycleTypeId === 1
-              ? this.getStatusEnum(x.isPresent, x.attendanceUnit)
-              : this.getStatusEnumForDailyWages(x.inTime, x.outTime),
-        }));
-        this.dataSource = new MatTableDataSource(convData);
-        this.queriedDate = date;
-        this.loading = false;
-      });
   }
 
   private setupColumns(statusTemplate: TemplateRef<any>) {
@@ -228,38 +244,13 @@ export class AttendanceRegisterEditorFormService {
     ];
   }
 
-  private getAttendanceUnit(status: string | null) {
+  private getAttendanceUnit(status: number) {
     switch (status) {
-      case AttendanceStatusEnum.Present.toString():
+      case AttendanceStatusEnum.Present:
         return 1;
-      case AttendanceStatusEnum.HalfDay.toString():
+      case AttendanceStatusEnum.HalfDay:
         return 0.5;
     }
     return 0;
-  }
-
-  private getStatusEnum(isPresent: boolean, attendanceUnit: number) {
-    if (isPresent && attendanceUnit > 0.5)
-      return AttendanceStatusEnum.Present.toString();
-    if (isPresent && attendanceUnit === 0.5)
-      return AttendanceStatusEnum.HalfDay.toString();
-    if (Helper.isTruthy(isPresent) && !isPresent)
-      return AttendanceStatusEnum.Absent.toString();
-    return null;
-  }
-
-  private getStatusEnumForDailyWages(
-    inTimeString: string,
-    outTimeString: string
-  ) {
-    if ((inTimeString ?? '') === '' || (outTimeString ?? '') === '')
-      return null;
-    var inTime = new Date(inTimeString);
-    var outTime = new Date(outTimeString);
-    var hours = Math.abs(outTime.getTime() - inTime.getTime()) / 36e5;
-    if (hours > 5) return AttendanceStatusEnum.Present.toString();
-    if (hours > 0 && hours <= 5) return AttendanceStatusEnum.HalfDay.toString();
-    if (hours <= 0) return AttendanceStatusEnum.Absent.toString();
-    return null;
   }
 }
