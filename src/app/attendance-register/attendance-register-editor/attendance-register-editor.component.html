@@ -57,10 +57,10 @@
         <div class="flex-horizontal">
             <div class="flex-horizontal" *ngIf="row.status !== statusEnum.Absent">
                 <h3>In time :</h3>
-                <ngx-timepicker-field (timeChanged)="formService.inTimeChanged($event, row)"
+                <ngx-timepicker-field (timeChanged)="row.status = statusEnum.Present;"
                     [(ngModel)]="row.inTime"></ngx-timepicker-field>
                 <h3>Out time :</h3>
-                <ngx-timepicker-field (timeChanged)="formService.outTimeChanged($event,row)"
+                <ngx-timepicker-field (timeChanged)="row.status = statusEnum.Present;"
                     [(ngModel)]="row.outTime"></ngx-timepicker-field>
                 <span><a href="javascript:void(0);" (click)="formService.resetTimePicker(row)">Reset</a></span>
             </div>

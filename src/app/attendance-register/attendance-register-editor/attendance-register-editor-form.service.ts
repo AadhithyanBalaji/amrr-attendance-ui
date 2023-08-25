@@ -88,8 +88,8 @@ export class AttendanceRegisterEditorFormService {
       .filter((x) => x.payCycleTypeId === 3)
       .map((x) => ({
         employeeId: x.id,
-        inTime: x.inTime,
-        outTime: x.outTime,
+        inTime: this.buildDateTimeString(x.inTime),
+        outTime: this.buildDateTimeString(x.outTime),
         isPresent: x.status !== AttendanceStatusEnum.Absent,
       }));
 
@@ -153,23 +153,13 @@ export class AttendanceRegisterEditorFormService {
   }
 
   getUnMarkedCount() {
-    return this.dataSource.data.filter((x) =>
-      Helper.isNullOrUndefined(x.status)
+    return this.dataSource.data.filter(
+      (x) => x.status === AttendanceStatusEnum.NotMarked
     ).length;
   }
 
   getEmployeeCount(status: AttendanceStatusEnum) {
     return this.dataSource.data.filter((x) => x.status === status).length;
-  }
-
-  inTimeChanged(timeString: string, row: AttendanceEditorBrowser) {
-    row.inTime = this.buildDateTime(timeString) ?? '';
-    row.status = AttendanceStatusEnum.Present;
-  }
-
-  outTimeChanged(timeString: string, row: AttendanceEditorBrowser) {
-    row.outTime = this.buildDateTime(timeString) ?? '';
-    row.status = AttendanceStatusEnum.Present;
   }
 
   getTimeString(dateTimeString: string): string {
@@ -182,12 +172,13 @@ export class AttendanceRegisterEditorFormService {
   }
 
   isTimeRangeInvalid(row: AttendanceEditorBrowser): boolean {
-    const isValid =
-      (row.inTime ?? '') !== '' && (row.outTime ?? '') !== ''
-        ? new Date(row.inTime) >= new Date(row.outTime)
+    const inDateTime = this.buildDateTime(row.inTime);
+    const outDateTime = this.buildDateTime(row.outTime);
+    row.hasError =
+      Helper.isTruthy(inDateTime) && Helper.isTruthy(outDateTime)
+        ? inDateTime! >= outDateTime!
         : false;
-    row.hasError = isValid;
-    return isValid;
+    return row.hasError;
   }
 
   resetTimePicker(row: AttendanceEditorBrowser) {
@@ -204,7 +195,7 @@ export class AttendanceRegisterEditorFormService {
     }
   }
 
-  private buildDateTime(timeString: string): string | null {
+  private buildDateTime(timeString: string): Date | null {
     const timeArr = timeString.split(' ');
     if (timeArr.length <= 0) return null;
     const time = timeArr[0].split(':');
@@ -219,7 +210,14 @@ export class AttendanceRegisterEditorFormService {
         0
       )
     );
-    return this.datePipe.transform(attendanceDate, 'YYYY-MM-dd HH:mm:ss') ?? '';
+    return attendanceDate;
+  }
+
+  private buildDateTimeString(timeString: string): string | null {
+    const date = this.buildDateTime(timeString);
+    return Helper.isTruthy(date)
+      ? this.datePipe.transform(date, 'YYYY-MM-dd HH:mm:ss')
+      : '';
   }
 
   private setupColumns(statusTemplate: TemplateRef<any>) {
