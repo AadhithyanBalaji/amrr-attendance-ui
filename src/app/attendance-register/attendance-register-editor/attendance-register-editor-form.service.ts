@@ -200,11 +200,17 @@ export class AttendanceRegisterEditorFormService {
     if (timeArr.length <= 0) return null;
     const time = timeArr[0].split(':');
     if (time.length < 2) return null;
-    const hour = +time[0];
+    let hour = +time[0];
     const mins = +time[1];
+    const timeSuffix = timeArr[1].trim();
+    if (timeSuffix === 'AM' && hour === 12) {
+      hour = 0;
+    }
     const attendanceDate = new Date(
       new Date(this.form.controls.attendanceDate.value).setHours(
-        timeArr[1].trim() === 'AM' ? hour : hour + 12,
+        timeSuffix === 'AM' || (timeSuffix === 'PM' && hour === 12)
+          ? hour
+          : hour + 12,
         mins,
         0,
         0
