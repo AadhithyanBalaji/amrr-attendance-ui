@@ -212,6 +212,13 @@ export class PayslipBrowserService {
     );
   }
 
+  printBankDetails() {
+    this.pdfService.generateBankInfo(
+      this.getFilterData(),
+      this.dataSource.data
+    );
+  }
+
   navigateToBonusBrowser() {
     this.router.navigate(['bonus']);
   }

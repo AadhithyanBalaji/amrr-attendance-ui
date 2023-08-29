@@ -31,4 +31,9 @@ export class PayslipBrowser {
   companyHolidays: number;
   preparedByUser: string;
   weekendsCount: number;
+  bankDetailId: number;
+  accountNumber: string;
+  ifsc: string;
+  branchLocation: string;
+  bankName: string;
 }

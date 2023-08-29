@@ -34,6 +34,9 @@
                         <button mat-flat-button color="primary"
                             [disabled]="browserService.dataSource && browserService.dataSource.data.length <= 0"
                             (click)="browserService.printPayslips()">Print Payslips</button>
+                        <button mat-flat-button color="primary"
+                            [disabled]="browserService.dataSource && browserService.dataSource.data.length <= 0"
+                            (click)="browserService.printBankDetails()">Print Bank Info</button>
                         <mat-spinner *ngIf="browserService.actionLoading" [diameter]="30"></mat-spinner>
                     </div>
                 </div>

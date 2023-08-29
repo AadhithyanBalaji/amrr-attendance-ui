@@ -64,6 +64,121 @@ export class PdfService {
     this.printPdf(docDef);
   }
 
+  generateBankInfo(filterData: any, payslips: PayslipBrowser[]) {
+    if (
+      Helper.isNullOrUndefined(filterData) ||
+      Helper.isNullOrUndefined(filterData.month)
+    ) {
+      this.snackBar.open('Month is not selected');
+      return;
+    }
+    if (payslips.length <= 0) {
+      this.snackBar.open('No salary information to be printed');
+      return;
+    }
+    const paySlipDate: Date = new Date(filterData.month);
+    const paySlipCycle = `${Helper.getMonthName(
+      paySlipDate.getMonth()
+    )} ${paySlipDate.getFullYear()}`;
+
+    let bankDetailsContent: any[] = [];
+
+    const bankGroups = Helper.groupBy(payslips, 'bankName');
+    const bankGroupNames = Object.keys(bankGroups);
+    for (let i = 0; i < bankGroupNames.length; i++) {
+      let bankName = bankGroupNames[i];
+      const payeeList = bankGroups[bankGroupNames[i]];
+      if (bankName === 'null') {
+        bankName = 'Bank info not found';
+      }
+      bankDetailsContent = [
+        ...bankDetailsContent,
+        { text: bankName, alignment: 'center' },
+        [
+          {
+            style: 'tableExample',
+            color: '#444',
+            table: {
+              widths: ['*', '*', '*', '*'],
+              headerRows: 1,
+              body: [
+                [
+                  {
+                    text: `Employee Name`,
+                    style: 'tableMainHeader',
+                    alignment: 'center',
+                  },
+                  {
+                    text: `Salary payable`,
+                    style: 'tableMainHeader',
+                    alignment: 'center',
+                  },
+                  {
+                    text: `Account Number`,
+                    style: 'tableMainHeader',
+                    alignment: 'center',
+                  },
+                  {
+                    text: `IFSC`,
+                    style: 'tableMainHeader',
+                    alignment: 'center',
+                  },
+                ],
+                ...this.generatePayeeList(payeeList),
+              ],
+            },
+          },
+        ],
+        i == bankGroupNames.length - 1
+          ? { text: '' }
+          : { text: '', pageBreak: 'after' },
+      ];
+    }
+
+    const docDef = {
+      info: {
+        title: `Bank Details - ${paySlipCycle}`,
+        author: 'AMRR',
+        subject: 'Bank Info',
+        keywords: 'amrr bank transfer',
+      },
+      pageSize: 'A4',
+      content: bankDetailsContent,
+      styles: this.getPdfStyles(),
+      defaultStyle: {
+        columnGap: 20,
+        color: 'black',
+      },
+    };
+
+    this.printPdf(docDef);
+  }
+
+  private generatePayeeList(payeeList: PayslipBrowser[]): any[] {
+    const list: any[] = [];
+    payeeList.forEach((payee) => {
+      list.push([
+        {
+          text: payee.employeeName,
+          alignment: 'center',
+        },
+        {
+          text: this.getTotalSalaryPaid(payee),
+          alignment: 'center',
+        },
+        {
+          text: payee.accountNumber,
+          alignment: 'center',
+        },
+        {
+          text: payee.ifsc,
+          alignment: 'center',
+        },
+      ]);
+    });
+    return list;
+  }
+
   private generatePayslipDocDef(
     payslip: PayslipBrowser,
     paySlipCycle: string,
@@ -214,11 +329,7 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: (
-                  payslip.basicComponent +
-                  payslip.hraComponent +
-                  (payslip.petrolAllowance ?? 0)
-                ).toFixed(2),
+                text: this.getTotalSalaryPaid(payslip),
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -415,5 +526,13 @@ export class PdfService {
         fontSize: 8,
       },
     };
+  }
+
+  private getTotalSalaryPaid(paySlip: PayslipBrowser) {
+    return (
+      paySlip.basicComponent +
+      paySlip.hraComponent +
+      (paySlip.petrolAllowance ?? 0)
+    ).toFixed(2);
   }
 }

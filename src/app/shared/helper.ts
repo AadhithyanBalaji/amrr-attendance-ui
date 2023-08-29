@@ -111,4 +111,11 @@ export default class Helper {
       form.controls.accountNumber.updateValueAndValidity();
     });
   }
+
+  public static groupBy(xs: any, key: any) {
+    return xs.reduce(function (rv: any, x: any) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  }
 }
