@@ -345,9 +345,11 @@ export class PdfService {
               {},
               {
                 text: (
-                  payslip.totalPay +
-                  payslip.esiComponent +
-                  payslip.pfComponent
+                  (payslip.basicComponent ?? 0) +
+                  (payslip.hraComponent ?? 0) +
+                  (payslip.petrolAllowance ?? 0) +
+                  (payslip.esiComponent ?? 0) +
+                  (payslip.pfComponent ?? 0)
                 ).toFixed(2),
                 style: 'tableHeader',
                 alignment: 'center',
@@ -530,8 +532,8 @@ export class PdfService {
 
   private getTotalSalaryPaid(paySlip: PayslipBrowser) {
     return (
-      paySlip.basicComponent +
-      paySlip.hraComponent +
+      (paySlip.basicComponent ?? 0) +
+      (paySlip.hraComponent ?? 0) +
       (paySlip.petrolAllowance ?? 0)
     ).toFixed(2);
   }
