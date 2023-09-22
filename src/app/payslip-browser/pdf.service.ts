@@ -281,17 +281,17 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: payslip.basicComponent.toFixed(2),
+                text: payslip.basicComponent?.toFixed(2) ?? '-',
                 style: 'tableHeader',
                 alignment: 'center',
               },
               {
-                text: payslip.esiComponent.toFixed(2),
+                text: payslip.pfComponent?.toFixed(2) ?? '-',
                 style: 'tableHeader',
                 alignment: 'center',
               },
               {
-                text: payslip.pfComponent.toFixed(2),
+                text: payslip.esiComponent?.toFixed(2) ?? '-',
                 style: 'tableHeader',
                 alignment: 'center',
               },
@@ -302,7 +302,7 @@ export class PdfService {
                 alignment: 'center',
               },
               {
-                text: payslip.hraComponent.toFixed(2),
+                text: payslip.hraComponent?.toFixed(2) ?? '-',
                 style: 'tableHeader',
                 alignment: 'center',
               },
