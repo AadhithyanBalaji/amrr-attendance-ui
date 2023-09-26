@@ -43,7 +43,37 @@ export class PayslipAllowanceEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.setupColumns();
-    this.dataSource = new MatTableDataSource(this.data.empRecords.recordset);
+    const empRecords = this.data?.resultData[0]?.recordset ?? [];
+    const attendanceRecords = this.data?.resultData[1]?.recordset ?? [];
+
+    const noOfDays = Helper.getNoOfDays(this.data.generatedOn);
+    for (let i = 1; i <= noOfDays; i++) {
+      const date: Date = this.data.requestDate;
+      date.setDate(i);
+      if (date.getDay() === 6 || date.getDay() === 0) {
+        this.columns.push({
+          key: i + '',
+          name: i + '',
+          type: GridColumnType.String,
+        });
+      }
+    }
+
+    for (let i = 0; i < empRecords.length; i++) {
+      const empId = empRecords[i].employeeId;
+      const attendanceRecord = attendanceRecords.find(
+        (a) => a.EmployeeId === empId
+      );
+      for (
+        let j = 5;
+        j < this.columns.length && Helper.isTruthy(attendanceRecord);
+        j++
+      ) {
+        const index = this.columns[j].key;
+        empRecords[i][index] = attendanceRecord[index];
+      }
+    }
+    this.dataSource = new MatTableDataSource(empRecords);
   }
 
   setupColumns() {
@@ -65,6 +95,16 @@ export class PayslipAllowanceEditorComponent implements OnInit {
         type: GridColumnType.Template,
         template: this.allowanceTemplate,
       },
+      {
+        key: Helper.nameof<PayslipAllowanceEditor>('basic'),
+        name: 'Basic',
+        type: GridColumnType.Number,
+      },
+      {
+        key: Helper.nameof<PayslipAllowanceEditor>('hra'),
+        name: 'HRA',
+        type: GridColumnType.Number,
+      },
     ];
   }
 
@@ -78,20 +118,18 @@ export class PayslipAllowanceEditorComponent implements OnInit {
       employeeId: x.employeeId,
       petrolAllowance: x.petrolAllowance,
     }));
+    const request = {
+      generatedOn: this.data.generatedOn,
+      companyId: this.data.companyId,
+      userId: this.data.userId,
+      empRecords: empRecords,
+    };
     this.apiBusinessService
-      .post('payslip/generate', {
-        generatedOn: this.data.generatedOn,
-        companyId: this.data.companyId,
-        userId: this.data.userId,
-        empRecords: empRecords,
-      })
+      .post('payslip/generate', request)
       .pipe(take(1))
-      .subscribe(
-        (_) => {
-          this.loading = false;
-          this.dialogRef.close();
-        },
-        (error) => (this.loading = false)
-      );
+      .subscribe((_) => {
+        this.loading = false;
+        this.dialogRef.close();
+      });
   }
 }

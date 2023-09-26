@@ -6,7 +6,7 @@ import {
 import Helper from '../shared/helper';
 import { PayslipBrowser } from './payslip-browser.model';
 import { ApiBusinessService } from '../shared/api-business.service';
-import { take } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DatePipe } from '@angular/common';
@@ -175,27 +175,30 @@ export class PayslipBrowserService {
       return;
     }
 
-    this.apiBusinessService
-      .post('payslip/getEligibleEmployees', {
-        generatedOn: Helper.getAttendanceDate(
-          this.form.controls.month.value,
-          this.datePipe
-        ),
-        companyId: filterData!.companyId,
-        unitId: filterData!.unitId,
-      })
+    const requestData = {
+      generatedOn: Helper.getAttendanceDate(
+        this.form.controls.month.value,
+        this.datePipe
+      ),
+      companyId: filterData!.companyId,
+      unitId: filterData!.unitId,
+      employeeId: 0,
+    };
+
+    combineLatest([
+      this.apiBusinessService.post('payslip/getEligibleEmployees', requestData),
+      this.apiBusinessService.post('attendance/filter', requestData),
+    ])
       .pipe(take(1))
       .subscribe((result) => {
         this.actionLoading = false;
         this.dialog
           .open(PayslipAllowanceEditorComponent, {
             data: {
-              empRecords: result,
+              resultData: result,
               companyId: filterData!.companyId,
-              generatedOn: Helper.getAttendanceDate(
-                this.form.controls.month.value,
-                this.datePipe
-              ),
+              generatedOn: requestData.generatedOn,
+              requestDate: this.form.controls.month.value,
               userId: this.authService.getUserId(),
             },
           })

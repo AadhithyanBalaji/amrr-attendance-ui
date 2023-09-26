@@ -3,4 +3,6 @@ export class PayslipAllowanceEditor {
   employeeName: string;
   isOvertime: number;
   petrolAllowance: number;
+  basic: number;
+  hra: number;
 }
