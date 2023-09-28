@@ -65,7 +65,7 @@ export class PayslipAllowanceEditorComponent implements OnInit {
         (a) => a.EmployeeId === empId
       );
       for (
-        let j = 5;
+        let j = 7;
         j < this.columns.length && Helper.isTruthy(attendanceRecord);
         j++
       ) {
@@ -103,6 +103,16 @@ export class PayslipAllowanceEditorComponent implements OnInit {
       {
         key: Helper.nameof<PayslipAllowanceEditor>('hra'),
         name: 'HRA',
+        type: GridColumnType.Number,
+      },
+      {
+        key: Helper.nameof<PayslipAllowanceEditor>('totalPay'),
+        name: 'Total',
+        type: GridColumnType.Number,
+      },
+      {
+        key: Helper.nameof<PayslipAllowanceEditor>('totalWorkingDays'),
+        name: 'Total working days',
         type: GridColumnType.Number,
       },
     ];

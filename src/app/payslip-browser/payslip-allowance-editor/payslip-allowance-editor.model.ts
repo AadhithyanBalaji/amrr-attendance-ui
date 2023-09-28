@@ -5,4 +5,6 @@ export class PayslipAllowanceEditor {
   petrolAllowance: number;
   basic: number;
   hra: number;
+  totalPay: number;
+  totalWorkingDays: number;
 }
