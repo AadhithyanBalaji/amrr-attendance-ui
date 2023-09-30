@@ -38,11 +38,6 @@ export class PdfService {
         ...payslipContent,
         { text: 'Employer Copy', alignment: 'center' },
         this.generatePayslipDocDef(payslip, paySlipCycle, paySlipDate),
-        { text: 'Employee Copy', alignment: 'center' },
-        this.generatePayslipDocDef(payslip, paySlipCycle, paySlipDate),
-        i == payslips.length - 1
-          ? { text: '' }
-          : { text: '', pageBreak: 'after' },
       ];
     }
 

@@ -186,7 +186,10 @@ export class PayslipBrowserService {
     };
 
     combineLatest([
-      this.apiBusinessService.post('payslip/getEligibleEmployees', requestData),
+      this.apiBusinessService.post(
+        'payslip/generatePayslipsPreview',
+        requestData
+      ),
       this.apiBusinessService.post('attendance/filter', requestData),
     ])
       .pipe(take(1))
