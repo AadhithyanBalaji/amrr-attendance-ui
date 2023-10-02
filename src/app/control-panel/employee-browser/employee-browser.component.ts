@@ -38,6 +38,7 @@ export class EmployeeBrowserComponent implements OnInit {
     salary: new FormControl(null, [Validators.required]),
     basic: new FormControl(0, [Validators.required]),
     hra: new FormControl(0, [Validators.required]),
+    salaryEffectiveDate: new FormControl(null, [Validators.required]),
     unit: new FormControl(null, [Validators.required]),
     dateOfJoining: new FormControl(null, [Validators.required]),
     uanNo: new FormControl(null, [Validators.minLength(12)]),
@@ -162,6 +163,9 @@ export class EmployeeBrowserComponent implements OnInit {
       item.payCycleTypeId = +this.form.controls.payCycleTypeId.value!;
       item.basic = this.form.controls.basic.value!;
       item.hra = this.form.controls.hra.value!;
+      item.salaryEffectiveDate = this.getFormattedDate(
+        this.form.controls.salaryEffectiveDate.value!
+      );
       item.unitId = (this.form.controls.unit.value as any).id;
       item.dateOfJoining = this.getFormattedDate(
         this.form.controls.dateOfJoining.value!

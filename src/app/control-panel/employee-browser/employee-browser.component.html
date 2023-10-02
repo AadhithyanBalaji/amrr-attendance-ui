@@ -55,15 +55,26 @@
             </div>
             <div class="bank-info">
                 <h3>Salary Info</h3>
-                <div style="margin: 15px 0">
-                    <mat-radio-group aria-label="Select an option" formControlName="payCycleTypeId" required>
-                        <mat-radio-button [color]="'primary'" value="1"
-                            [checked]="form.controls.payCycleTypeId.value === 1">Monthly</mat-radio-button>
-                        <mat-radio-button [color]="'accent'" value="3"
-                            [checked]="form.controls.payCycleTypeId.value === 3">Daily</mat-radio-button>
-                    </mat-radio-group>
-                    <mat-error *ngIf="form.controls.payCycleTypeId.touched && form.controls.payCycleTypeId.invalid">This
-                        field is required</mat-error>
+                <div style="margin: 15px 0; display: flex">
+                    <div>
+                        <mat-radio-group aria-label="Select an option" formControlName="payCycleTypeId" required>
+                            <mat-radio-button [color]="'primary'" value="1"
+                                [checked]="form.controls.payCycleTypeId.value === 1">Monthly</mat-radio-button>
+                            <mat-radio-button [color]="'accent'" value="3"
+                                [checked]="form.controls.payCycleTypeId.value === 3">Daily</mat-radio-button>
+                        </mat-radio-group>
+                        <mat-error
+                            *ngIf="form.controls.payCycleTypeId.touched && form.controls.payCycleTypeId.invalid">This
+                            field is required</mat-error>
+                    </div>
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Effective date</mat-label>
+                            <input matInput formControlName="salaryEffectiveDate" [matDatepicker]="salaryEffectiveDate">
+                            <mat-datepicker-toggle matIconSuffix [for]="salaryEffectiveDate"></mat-datepicker-toggle>
+                            <mat-datepicker #salaryEffectiveDate> </mat-datepicker>
+                        </mat-form-field>
+                    </div>
                 </div>
                 <div class="flex-vertical">
                     <mat-form-field>
