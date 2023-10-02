@@ -16,7 +16,7 @@
 <ng-template #allowanceTemplate let-row="row">
     <div class="form-field-container">
         <mat-form-field>
-            <input matInput type="number" [(ngModel)]="row.petrolAllowance" [required]="row.isOvertime === 1">
+            <input matInput type="number" [(ngModel)]="row.petrolAllowance" (ngModelChange)="onPetrolAllowanceChanged(row)" [required]="row.isOvertime === 1">
             <mat-icon matSuffix>currency_rupee</mat-icon>
         </mat-form-field>
     </div>

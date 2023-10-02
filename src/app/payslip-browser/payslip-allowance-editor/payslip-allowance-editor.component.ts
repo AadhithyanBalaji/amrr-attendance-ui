@@ -122,6 +122,10 @@ export class PayslipAllowanceEditorComponent implements OnInit {
     this.initiateGeneratePayslips();
   }
 
+  onPetrolAllowanceChanged(row: PayslipAllowanceEditor) {
+    row.totalPay = row.basic + row.hra + row.petrolAllowance;
+  }
+
   private initiateGeneratePayslips() {
     this.loading = true;
     const empRecords = this.dataSource.data.map((x) => ({
